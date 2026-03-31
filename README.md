@@ -1,12 +1,14 @@
 # ☕ [Phát triển hệ thống đấu giá trực tuyến] - Nhóm 13.
 
-## 👥 2. Thành viên nhóm & Chỉ số đóng góp (KPI)
+## 👥 2. Thành viên nhóm & Theo dõi tiến độ
 
-| MSSV | Họ và tên | Vai trò chuyên môn | % commit | Rank / Trạng thái |
-| :--- | :--- | :--- | :---: | :---: | :--- |
+| MSSV | Họ và tên | Vai trò chuyên môn | % Commit | Trạng thái |
+| :--- | :--- | :--- | :---: | :--- |
 | 25020038 | **Lê Hữu Bằng** | **Leader** |  |  |
 | 25020182 | **Nguyễn Nhất Huy** | `[Tự điền]` |  |  |
 | 25020159 | **Dương Bá Việt Hoàng** | `[Tự điền]` |  |  |
+
+> **Cách tính % Commit:** Tổng điểm % từ các Task đã được Leader Merge vào nhánh `main`. Con số này là căn cứ duy nhất để chia điểm project.
 
 ## 📖 1. Giới thiệu dự án
 Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép nhiều người dùng cùng tham gia cạnh tranh giá để mua một sản phẩm trong một khoảng thời gian xác định. Dự án được phát triển bằng ngôn ngữ Java.
@@ -34,10 +36,11 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 * **Xác nhận hỗ trợ:** Thành viên chỉ được sửa code người khác khi đã tạo 1 **GitHub Issue**, tag tên người hỗ trợ và được xác nhận (Comment "Chốt" hoặc "Đồng ý") trong Issue đó.
 * **Chia sẻ quyền lợi:** Nếu hỗ trợ fix logic quan trọng (>30% module), người hỗ trợ hưởng **50% số điểm** task đó (trừ trực tiếp từ người nhận task chính).
 * **Leader Review:** Nếu Pull Request (PR) có lỗi, Leader trả bài. Tự sửa thành công -> 100% điểm. Nếu để Leader phải can thiệp sửa hộ để chạy được -> **Trừ 50% điểm** task đó chuyển cho Leader.
-
+### ⏱️ 4.3. Lưu ý đặc biệt: Quy tắc "Xí phần" & Hiệu lực
+* **Giới hạn & Thời hạn:** Mỗi thành viên chỉ được giữ tối đa **2 Task** chưa xong cùng lúc. Sau **3 ngày** claim task mà không có Commit chứng minh tiến độ -> Leader có quyền **thu hồi (Unassign)** ngay lập tức để mở cho người khác làm.
 ---
 
-## 📦 5. Phân công công việc (Phase 1 - Bắt buộc)
+## 📦 5.1. Phân công công việc (Phase 1 - Bắt buộc)
 
 ### Gói 1: Quản lý Tài khoản & Sản phẩm
 - [ ] **Xây dựng chức năng quản lý người dùng** (Rank C - 2%)
@@ -68,7 +71,7 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 
 ---
 
-## 📦 6. Phân công công việc (Phase 2 - Nâng cao)
+## 📦 5.2. Phân công công việc (Phase 2 - Nâng cao)
 *(Chỉ mở khóa khi Phase 1 đạt 100%)*
 
 ### Gói 4: Chức năng nâng cao
