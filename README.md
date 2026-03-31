@@ -1,11 +1,12 @@
 # ☕ [Phát triển hệ thống đấu giá trực tuyến] - Nhóm 13.
 
-## 👥 Thành viên nhóm
-| MSSV | Họ và tên | Nhiệm vụ |
-| :--- | :--- | :--- |
-| 25020038 | Lê Hữu Bằng | Leader |
-| 25020182 | Nguyễn Nhất Huy |  |
-| 25020159 | Dương Bá Việt Hoàng | |
+## 👥 2. Thành viên nhóm & Chỉ số đóng góp (KPI)
+
+| MSSV | Họ và tên | Vai trò chuyên môn | % commit | Rank / Trạng thái |
+| :--- | :--- | :--- | :---: | :---: | :--- |
+| 25020038 | **Lê Hữu Bằng** | **Leader** |  |  |
+| 25020182 | **Nguyễn Nhất Huy** | `[Tự điền]` |  |  |
+| 25020159 | **Dương Bá Việt Hoàng** | `[Tự điền]` |  |  |
 
 ## 📖 1. Giới thiệu dự án
 Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép nhiều người dùng cùng tham gia cạnh tranh giá để mua một sản phẩm trong một khoảng thời gian xác định. Dự án được phát triển bằng ngôn ngữ Java.
