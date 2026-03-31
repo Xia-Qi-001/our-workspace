@@ -10,11 +10,10 @@
 ## 📊 1. Tổng quan tiến độ (Cập nhật: 31/03/2026)
 
 **Core Engine:** 0/6 Module hoàn thành
-<img src="https://progress-bar.dev/0/?scale=6&title=Completed&width=400&color=e74c3c" />
+![Progress](https://img.shields.io/badge/Progress-0%2F6-red?style=for-the-badge)
 
 **Advanced Implementation:** 0/7 Module hoàn thành
-<img src="https://progress-bar.dev/0/?scale=7&title=Completed&width=400&color=f39c12" />
----
+![Progress](https://img.shields.io/badge/Progress-0%2F7-orange?style=for-the-badge)
 
 ## ⚖️ 2. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
 
