@@ -8,12 +8,12 @@
 | 25020159 | Dương Bá Việt Hoàng | |
 
 ## 📊 1. Tổng quan tiến độ (Cập nhật: 31/03/2026)
+
 **Core Engine:** 0/6 Module hoàn thành
-![Progress Phase 1](https://progress-bar.dev/0/?scale=6&title=Completed&width=400&color=e74c3c)
+<img src="https://progress-bar.dev/0/?scale=6&title=Completed&width=400&color=e74c3c" />
 
 **Advanced Implementation:** 0/7 Module hoàn thành
-![Progress Phase 2](https://progress-bar.dev/0/?scale=7&title=Completed&width=400&color=f39c12)
-
+<img src="https://progress-bar.dev/0/?scale=7&title=Completed&width=400&color=f39c12" />
 ---
 
 ## ⚖️ 2. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
