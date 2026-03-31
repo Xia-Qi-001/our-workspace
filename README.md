@@ -36,52 +36,72 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 
 ---
 
-## 📦 5. Danh sách Module & Claim Nhiệm vụ (Tổng 110%)
+## 📦 5. Phân công công việc (Phase 1 - Bắt buộc)
 
-### 🛠️ Nhóm 1: Core Engine (40% - Ưu tiên số 1)
-- [ ] **Quản lý User & Auth (Rank B - 5%)**
-  - *Mô tả:* Đăng ký, đăng nhập, phân quyền Admin/Seller/Bidder.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Quản lý Sản phẩm (Rank B - 5%)**
-  - *Mô tả:* CRUD sản phẩm (Thêm/Sửa/Xóa), quản lý danh mục hàng hóa của Seller.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Bidding Core Logic (Rank S - 15%)**
-  - *Mô tả:* Xử lý đặt giá, kiểm tra bước giá hợp lệ, cập nhật người dẫn đầu.
-  - *Phụ trách:* `[Trống]`
-- [ ] **UI/UX Framework (Rank C - 5%)**
-  - *Mô tả:* Thiết kế layout JavaFX, hệ thống menu điều hướng và phối màu.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Auction Lifecycle (Rank A - 8%)**
-  - *Mô tả:* Tự động đóng phiên khi hết giờ, xác định người thắng và chuyển trạng thái đơn hàng.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Exception Handling (Rank C - 2%)**
-  - *Mô tả:* Bắt lỗi nhập liệu, lỗi kết nối cơ bản, đảm bảo ứng dụng không crash.
-  - *Phụ trách:* `[Trống]`
+### Gói 1: Quản lý Tài khoản & Sản phẩm
+- [ ] **Xây dựng chức năng quản lý người dùng** (Rank C - 2%)
+  - *Mô tả:* Đăng ký, đăng nhập. Phân quyền Admin, Seller, Bidder.
+  - *Người phụ trách:* `[Điền tên]`
 
-### 🚀 Nhóm 2: Advanced Features & Architecture (50%)
-- [ ] **Concurrency Control (Rank SS - 20%)**
-  - *Mô tả:* Giải quyết Race Condition (tranh chấp) khi nhiều người cùng đặt giá vào giây cuối.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Distributed Architecture (Rank S - 10%)**
-  - *Mô tả:* Thiết kế mô hình Client-Server, giao tiếp qua Socket hoặc REST API.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Realtime Communication (Rank S - 10%)**
-  - *Mô tả:* Áp dụng Observer Pattern để cập nhật giá ngay lập tức cho tất cả các Client.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Structural Design Patterns (Rank S - 10%)**
-  - *Mô tả:* Triển khai tối thiểu 4 patterns: Singleton, Factory, Strategy, Observer.
-  - *Phụ trách:* `[Trống]`
+- [ ] **Cài đặt chức năng quản lý sản phẩm** (Rank B - 5%)
+  - *Mô tả:* Seller thêm, sửa, xóa thông tin sản phẩm (Tên, mô tả, giá, thời gian).
+  - *Người phụ trách:* `[Điền tên]`
 
-### 🧪 Nhóm 3: Infrastructure & Optimization (20% Bonus)
-- [ ] **Quality Assurance (Rank A - 10%)**
-  - *Mô tả:* Viết Unit Test (JUnit), thiết lập CI/CD (GitHub Actions) để tự động kiểm tra mã nguồn.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Auto-bid Logic (Rank B - 5%)**
-  - *Mô tả:* Thuật toán tự động nâng giá cho người dùng đến mức trần thiết lập.
-  - *Phụ trách:* `[Trống]`
-- [ ] **Anti-sniping & Chart (Rank B - 5%)**
-  - *Mô tả:* Tự gia hạn phiên đấu giá giây cuối và vẽ biểu đồ lịch sử giá trực quan.
-  - *Phụ trách:* `[Trống]`
+### Gói 2: Giao diện người dùng (GUI)
+- [ ] **Thiết kế các màn hình chính** (Rank D - 2%)
+  - *Mô tả:* Vẽ giao diện JavaFX/Swing: Danh sách, chi tiết, quản lý, và phòng đấu giá.
+  - *Người phụ trách:* `[Điền tên]`
 
+### Gói 3: Core Logic Đấu giá
+- [ ] **Xử lý luồng tham gia đấu giá** (Rank S - 15%)
+  - *Mô tả:* Nhận giá đặt, kiểm tra tính hợp lệ và cập nhật người dẫn đầu.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Xử lý luồng kết thúc phiên** (Rank A - 10%)
+  - *Mô tả:* Đóng phiên khi hết giờ, chốt người thắng, chuyển trạng thái.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Xử lý lỗi & ngoại lệ** (Rank C - 2%)
+  - *Mô tả:* Chặn đặt giá thấp hơn giá hiện tại, đấu giá khi đã đóng phiên, lỗi kết nối.
+  - *Người phụ trách:* `[Điền tên]`
+
+---
+
+## 📦 6. Phân công công việc (Phase 2 - Nâng cao)
+*(Chỉ mở khóa khi Phase 1 đạt 100%)*
+
+### Gói 4: Chức năng nâng cao
+- [ ] **Xử lý đấu giá đồng thời (Concurrent)** (Rank SS - 25%)
+  - *Mô tả:* Tránh lost update, race condition khi nhiều người cùng đặt giá.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Realtime Update** (Rank S - 15%)
+  - *Mô tả:* Cập nhật giá ngay lập tức cho toàn bộ client (Observer/Socket).
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Auto-Bidding** (Rank A - 10%)
+  - *Mô tả:* Tự trả giá thay người dùng dựa trên maxBid và increment.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Gia hạn phiên đấu giá (Anti-sniping)** (Rank B - 5%)
+  - *Mô tả:* Cộng thêm thời gian nếu có lượt đặt giá ở những giây cuối.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Bid History Visualization** (Rank B - 5%)
+  - *Mô tả:* Biểu đồ đường (line chart) lịch sử giá đấu realtime.
+  - *Người phụ trách:* `[Điền tên]`
+
+### Gói 5: Kiến trúc & Triển khai
+- [ ] **Kiến trúc Client-Server & MVC** (Rank SS - 25%)
+  - *Mô tả:* Tách biệt Client/Server, giao tiếp REST API/Socket. Đảm bảo luồng dữ liệu chuẩn.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Áp dụng Design Pattern** (Rank S - 15%)
+  - *Mô tả:* Singleton, Factory Method, Observer, Strategy.
+  - *Người phụ trách:* `[Điền tên]`
+
+- [ ] **Tích hợp & Unit Test** (Rank A - 10%)
+  - *Mô tả:* Cấu hình Maven/Gradle, viết JUnit, CI/CD.
+  - *Người phụ trách:* `[Điền tên]`
 ---
 *Ghi chú: Bài tập lớn chiếm trọng số ~30% tổng điểm môn học. Anh em tập trung claim task và triển khai đúng tiến độ.*
