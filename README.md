@@ -7,7 +7,15 @@
 | 25020182 | Nguyễn Nhất Huy |  |
 | 25020159 | Dương Bá Việt Hoàng | |
 
-## 📊 1. Tổng quan tiến độ (Cập nhật: 31/03/2026)
+## 📖 1. Giới thiệu dự án
+Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép nhiều người dùng cùng tham gia cạnh tranh giá để mua một sản phẩm trong một khoảng thời gian xác định. Dự án được phát triển bằng ngôn ngữ Java.
+
+## ⚠️ 2. Quy định làm việc nhóm (Quy tắc sống còn)
+* **Commit code:** Phải commit mã nguồn thường xuyên lên GitHub để chứng minh tiến độ; không chấp nhận trường hợp chỉ có một commit duy nhất vào thời điểm cuối.
+* **Trách nhiệm giải trình:** Nếu bất kỳ thành viên nào không hiểu hoặc không thể giải thích bất kỳ phần mã nguồn nào, toàn bộ nhóm sẽ bị chấm 0 điểm.
+* **Điểm số:** Chấm điểm theo nhóm. Nhóm tự phân chia điểm theo mức độ đóng góp, tổng điểm cá nhân bằng điểm chung của nhóm.
+
+## 📊 3. Tổng quan tiến độ (Cập nhật: 31/03/2026)
 
 **Core Engine:** 0/6 Module hoàn thành
 ![Progress](https://img.shields.io/badge/Progress-0%2F6-red?style=for-the-badge)
@@ -15,20 +23,20 @@
 **Advanced Implementation:** 0/7 Module hoàn thành
 ![Progress](https://img.shields.io/badge/Progress-0%2F7-orange?style=for-the-badge)
 
-## ⚖️ 2. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
+## ⚖️ 4. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
 
-### 🔒 2.1. Dependency Lock (Khóa phụ thuộc)
+### 🔒 4.1. Dependency Lock (Khóa phụ thuộc)
 * **Tuyệt đối KHÔNG triển khai Advanced Features khi Core Engine chưa hoàn thiện 100%.**
 * **Hình phạt:** Mọi điểm đóng góp từ các task Phase 2 sẽ bị **ĐÓNG BĂNG** (không ghi nhận) cho đến khi toàn bộ Phase 1 được Leader nghiệm thu.
 
-### 🤝 2.2. Cơ chế Hỗ trợ (Assist) & Review qua GitHub
+### 🤝 4.2. Cơ chế Hỗ trợ (Assist) & Review qua GitHub
 * **Xác nhận hỗ trợ:** Thành viên chỉ được sửa code người khác khi đã tạo 1 **GitHub Issue**, tag tên người hỗ trợ và được xác nhận (Comment "Chốt" hoặc "Đồng ý") trong Issue đó.
 * **Chia sẻ quyền lợi:** Nếu hỗ trợ fix logic quan trọng (>30% module), người hỗ trợ hưởng **50% số điểm** task đó (trừ trực tiếp từ người nhận task chính).
 * **Leader Review:** Nếu Pull Request (PR) có lỗi, Leader trả bài. Tự sửa thành công -> 100% điểm. Nếu để Leader phải can thiệp sửa hộ để chạy được -> **Trừ 50% điểm** task đó chuyển cho Leader.
 
 ---
 
-## 📦 3. Danh sách Module & Claim Nhiệm vụ (Tổng 110%)
+## 📦 5. Danh sách Module & Claim Nhiệm vụ (Tổng 110%)
 
 ### 🛠️ Nhóm 1: Core Engine (40% - Ưu tiên số 1)
 - [ ] **Quản lý User & Auth (Rank B - 5%)**
@@ -76,4 +84,4 @@
   - *Phụ trách:* `[Trống]`
 
 ---
-*Ghi chú: Bài tập lớn chiếm trọng số ~30-40% tổng điểm môn học. Anh em tập trung claim task và triển khai đúng tiến độ.*
+*Ghi chú: Bài tập lớn chiếm trọng số ~30% tổng điểm môn học. Anh em tập trung claim task và triển khai đúng tiến độ.*
