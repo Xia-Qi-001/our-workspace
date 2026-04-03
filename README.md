@@ -5,7 +5,7 @@
 | MSSV | Họ và tên | Vai trò chuyên môn | % Commit | Trạng thái |
 | :--- | :--- | :--- | :---: | :--- |
 | 25020038 | **Lê Hữu Bằng** | **Leader** |  |  |
-| 25020182 | **Nguyễn Nhất Huy** | `[Tự điền]` |  |  |
+| 25020182 | **Nguyễn Nhất Huy** | **Coder** |  |  |
 | 25020159 | **Dương Bá Việt Hoàng** | `[Tự điền]` |  |  |
 
 > **Cách tính % Commit:** Tổng điểm % từ các Task đã được Leader Merge vào nhánh `main`. Con số này là căn cứ duy nhất để chia điểm project.
