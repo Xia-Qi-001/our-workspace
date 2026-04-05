@@ -72,7 +72,7 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
   - *Phụ trách:* `[Trống - Đợi claim]`
 - [ ] **Quản lý Người dùng** (Rank A+ - 10%)
   - *Mô tả:* Cấu trúc DB, Đăng ký/Đăng nhập, Phân quyền (Admin/Seller/Bidder).
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Phụ trách:* `[Dương Bá Việt Hoàng]`
 - [ ] **Quản lý Sản phẩm** (Rank A+ - 10%)
   - *Mô tả:* Seller thêm/sửa/xóa sản phẩm, duyệt hình ảnh và thông tin.
   - *Phụ trách:* `Nguyễn Nhất Huy`
