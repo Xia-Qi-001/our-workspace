@@ -75,13 +75,13 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
   - *Phụ trách:* `[Trống - Đợi claim]`
 - [ ] **Quản lý Sản phẩm** (Rank A+ - 10%)
   - *Mô tả:* Seller thêm/sửa/xóa sản phẩm, duyệt hình ảnh và thông tin.
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Phụ trách:* `Nguyễn Nhất Huy`
 - [ ] **Giao diện (UI JavaFX/Swing)** (Rank A - 8%)
   - *Mô tả:* Kéo thả FXML, CSS. Vẽ các màn hình: Danh sách, Chi tiết, Phòng đấu giá.
   - *Phụ trách:* `[Trống - Đợi claim]`
 - [ ] **Xử lý lỗi (Exceptions)** (Rank B+ - 5%)
   - *Mô tả:* Validate đầu vào (chống nhập bậy), try-catch để app không bị crash.
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Phụ trách:* `Nguyễn Nhất Huy`
 
 ---
 
