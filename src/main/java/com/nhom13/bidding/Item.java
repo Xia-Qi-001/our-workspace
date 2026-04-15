@@ -1,3 +1,5 @@
+package com.nhom13.bidding;
+
 import java.util.HashMap;
 
 public class Item {
@@ -127,6 +129,65 @@ public class Item {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+    /**
+     * Đặt giá (bid) cho sản phẩm đấu giá.
+     *
+     * Phương thức này thực hiện 3 bước kiểm tra theo thứ tự ưu tiên:
+     *   1. Kiểm tra quyền hạn: Seller không được tự bid sản phẩm của mình.
+     *   2. Kiểm tra trạng thái phiên đấu giá: phải được duyệt VÀ chưa hết hạn.
+     *   3. Kiểm tra bước giá: giá đặt mới phải >= (currentPrice + bidIncrement).
+     *
+     * Nếu tất cả các kiểm tra đều pass, cập nhật giá hiện tại và người thắng tạm thời.
+     *
+     * @param newBid    Giá mà người dùng muốn đặt
+     * @param bidderId  Mã định danh của người đặt giá
+     * @throws Exceptions.UnauthorizedActionException Nếu bidderId trùng với sellerId (Seller tự bid)
+     * @throws Exceptions.AuctionClosedException     Nếu phiên đấu giá chưa duyệt hoặc đã hết thời gian
+     * @throws Exceptions.InvalidBidException        Nếu giá đặt không đạt mức tối thiểu yêu cầu
+     */
+    public void placeBid(double newBid, String bidderId)
+            throws Exceptions.UnauthorizedActionException, Exceptions.AuctionClosedException, Exceptions.InvalidBidException {
+
+        // --- Bước 1: Kiểm tra quyền hạn ---
+        // Seller không được phép tự đặt giá cho sản phẩm của chính mình
+        if (bidderId.equals(this.sellerId)) {
+            throw new Exceptions.UnauthorizedActionException(
+                    "Hành động không hợp lệ: Người bán (ID: " + bidderId
+                            + ") không được phép tự đặt giá cho sản phẩm của mình.");
+        }
+
+        // --- Bước 2: Kiểm tra trạng thái phiên đấu giá ---
+        // Phiên đấu giá phải đã được duyệt (approved == true) VÀ chưa quá endTime
+        if (!this.approved) {
+            throw new Exceptions.AuctionClosedException(
+                    "Phiên đấu giá cho sản phẩm '" + this.name
+                            + "' chưa được Admin duyệt. Vui lòng chờ duyệt.");
+        }
+        if (System.currentTimeMillis() >= this.endTime) {
+            throw new Exceptions.AuctionClosedException(
+                    "Phiên đấu giá cho sản phẩm '" + this.name
+                            + "' đã kết thúc. Không thể đặt giá thêm.");
+        }
+
+        // --- Bước 3: Kiểm tra bước giá (bid increment) ---
+        // Giá đặt mới phải >= giá hiện tại + bước giá tối thiểu
+        double minimumBid = this.currentPrice + this.bidIncrement;
+        if (newBid < minimumBid) {
+            throw new Exceptions.InvalidBidException(
+                    "Giá đặt " + newBid + " không hợp lệ. "
+                            + "Giá tối thiểu cần đặt là: " + minimumBid
+                            + " (Giá hiện tại: " + this.currentPrice
+                            + " + Bước giá: " + this.bidIncrement + ").");
+        }
+
+        // --- Tất cả kiểm tra đều pass => Cập nhật giá và người thắng tạm thời ---
+        this.currentPrice = newBid;
+        this.currentWinnerId = bidderId;
+        System.out.println("Đặt giá thành công! Sản phẩm: " + this.name
+                + " | Giá mới: " + this.currentPrice
+                + " | Người đặt: " + this.currentWinnerId);
     }
 }
 class ItemManager {
