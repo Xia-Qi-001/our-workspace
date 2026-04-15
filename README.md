@@ -3,10 +3,10 @@
 ## 👥 Thành viên nhóm & Theo dõi tiến độ
 
 | MSSV | Họ và tên | Vai trò chuyên môn | % Commit | Trạng thái |
-| :--- | :--- | :--- | :---: | :--- |
-| 25020038 | **Lê Hữu Bằng** | **Leader** |  |  |
-| 25020182 | **Nguyễn Nhất Huy** | **Coder** |  |  |
-| 25020159 | **Dương Bá Việt Hoàng** | `[Tự điền]` |  |  |
+| :--- | :--- |:-------------------| :---: | :--- |
+| 25020038 | **Lê Hữu Bằng** | **Leader**         |  |  |
+| 25020182 | **Nguyễn Nhất Huy** | **Coder**          |  |  |
+| 25020159 | **Dương Bá Việt Hoàng** | `[Coder]`          |  |  |
 
 > **Cách tính % Commit:** Tổng điểm % từ các Task đã được Leader Merge vào nhánh `main`. Con số này là căn cứ duy nhất để chia điểm project.
 ---
@@ -72,7 +72,7 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
   - *Phụ trách:* `[Trống - Đợi claim]`
 - [ ] **Quản lý Người dùng** (Rank A+ - 10%)
   - *Mô tả:* Cấu trúc DB, Đăng ký/Đăng nhập, Phân quyền (Admin/Seller/Bidder).
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Phụ trách:* `[Dương Bá Việt Hoàng]`
 - [ ] **Quản lý Sản phẩm** (Rank A+ - 10%)
   - *Mô tả:* Seller thêm/sửa/xóa sản phẩm, duyệt hình ảnh và thông tin.
   - *Phụ trách:* `[Trống - Đợi claim]`
