@@ -129,7 +129,7 @@ classDiagram
         +deductMoney(amount: double) void
         +refundMoney(amount: double) void
     }
-    note for User "GIẢI THÍCH:\n• balance: Số dư ví hiện tại\n• canAfford(): Check ví có đủ tiền không?\n• deductMoney(): Trừ thẳng tiền khi bid\n• refundMoney(): Hoàn tiền khi bị cướp top"
+    note for User "GIẢI THÍCH:<br>• balance: Số dư ví hiện tại<br>• canAfford(): Check ví có đủ tiền không?<br>• deductMoney(): Trừ thẳng tiền khi bid<br>• refundMoney(): Hoàn tiền khi bị cướp top"
 
     %% ==========================================
     %% 2. LỚP SẢN PHẨM (PRODUCT) - HUY
@@ -143,7 +143,7 @@ classDiagram
         +isValidBid(newBid: double) boolean
         +updateBid(newBid: double, userId: int) void
     }
-    note for Product "GIẢI THÍCH:\n• currentPrice: Giá cao nhất hiện tại\n• stepPrice: Bước giá tối thiểu bắt buộc\n• currentWinnerId: ID ông đang giữ Top 1\n• isValidBid(): Giá mới >= Giá HT + Bước giá?\n• updateBid(): Lưu Giá mới & ID người thắng"
+    note for Product "GIẢI THÍCH:<br>• currentPrice: Giá cao nhất hiện tại<br>• stepPrice: Bước giá tối thiểu bắt buộc<br>• currentWinnerId: ID ông đang giữ Top 1<br>• isValidBid(): Giá mới >= Giá HT + Bước giá?<br>• updateBid(): Lưu Giá mới & ID người thắng"
 
     %% ==========================================
     %% 3. LỚP ĐIỀU PHỐI (AUCTION CONTROLLER) - BẰNG
@@ -155,7 +155,7 @@ classDiagram
         +processBid(user: User, amount: double) void
         +endAuction() void
     }
-    note for AuctionController "HÀM CẦM TRỊCH processBid():\n1. Gọi isTimeValid() -> Còn giờ không?\n2. Gọi user.canAfford() -> Đủ tiền không?\n3. Gọi product.isValidBid() -> Đủ bước giá?\n=> Cả 3 OK: Thực thi trừ tiền & cập nhật giá"
+    note for AuctionController "HÀM CẦM TRỊCH processBid():<br>1. Gọi isTimeValid() -> Còn giờ không?<br>2. Gọi user.canAfford() -> Đủ tiền không?<br>3. Gọi product.isValidBid() -> Đủ bước giá?<br>=> Cả 3 OK: Thực thi trừ tiền & cập nhật giá"
 
     %% ==========================================
     %% MỐI QUAN HỆ GIỮA CÁC LỚP
@@ -169,10 +169,5 @@ classDiagram
     %% ==========================================
     class LEGEND_GIAI_NGHIA_KY_HIEU {
         <<Chú thích>>
-        (-) : Private (Biến nội bộ)
-        (+) : Public (Phương thức mở)
-        (-->) : Liên kết mạnh
-        (..>) : Liên kết phụ thuộc
-        ("1") : 1 đối tượng tham gia
-        ("*") : Nhiều đối tượng tham gia
     }
+    note for LEGEND_GIAI_NGHIA_KY_HIEU "(-) : Private (Biến nội bộ)<br>(+) : Public (Phương thức mở)<br>(-->) : Liên kết mạnh<br>(..>) : Liên kết phụ thuộc<br>(\"1\") : 1 đối tượng tham gia<br>(\"*\") : Nhiều đối tượng tham gia"
