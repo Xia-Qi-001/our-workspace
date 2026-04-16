@@ -124,11 +124,12 @@ classDiagram
     class User {
         -int id
         -String username
-        -double balance : (Số dư ví hiện tại)
-        +canAfford(amount: double) boolean : (Check ví đủ tiền không?)
-        +deductMoney(amount: double) void : (Trừ thẳng tiền khi bid)
-        +refundMoney(amount: double) void : (Hoàn tiền khi bị cướp top)
+        -double balance
+        +canAfford(amount: double) boolean
+        +deductMoney(amount: double) void
+        +refundMoney(amount: double) void
     }
+    note for User "GIẢI THÍCH:\n• balance: Số dư ví hiện tại\n• canAfford(): Check ví có đủ tiền không?\n• deductMoney(): Trừ thẳng tiền khi bid\n• refundMoney(): Hoàn tiền khi bị cướp top"
 
     %% ==========================================
     %% 2. LỚP SẢN PHẨM (PRODUCT) - HUY
@@ -136,12 +137,13 @@ classDiagram
     class Product {
         -int id
         -String name
-        -double currentPrice : (Giá cao nhất hiện tại)
-        -double stepPrice : (Bước giá tối thiểu)
-        -int currentWinnerId : (ID người đang giữ Top 1)
-        +isValidBid(newBid: double) boolean : (Check: Giá mới >= Giá HT + Bước giá?)
-        +updateBid(newBid: double, userId: int) void : (Lưu Giá mới & ID người thắng)
+        -double currentPrice
+        -double stepPrice
+        -int currentWinnerId
+        +isValidBid(newBid: double) boolean
+        +updateBid(newBid: double, userId: int) void
     }
+    note for Product "GIẢI THÍCH:\n• currentPrice: Giá cao nhất hiện tại\n• stepPrice: Bước giá tối thiểu bắt buộc\n• currentWinnerId: ID ông đang giữ Top 1\n• isValidBid(): Giá mới >= Giá HT + Bước giá?\n• updateBid(): Lưu Giá mới & ID người thắng"
 
     %% ==========================================
     %% 3. LỚP ĐIỀU PHỐI (AUCTION CONTROLLER) - BẰNG
@@ -149,10 +151,11 @@ classDiagram
     class AuctionController {
         -int remainingTime
         -Product product
-        +isTimeValid() boolean : (Check: Còn thời gian không?)
-        +processBid(user: User, amount: double) void : (Hàm Cầm Trịch: Gọi 3 check trên)
-        +endAuction() void : (Chốt phiên, lưu kết quả)
+        +isTimeValid() boolean
+        +processBid(user: User, amount: double) void
+        +endAuction() void
     }
+    note for AuctionController "HÀM CẦM TRỊCH processBid():\n1. Gọi isTimeValid() -> Còn giờ không?\n2. Gọi user.canAfford() -> Đủ tiền không?\n3. Gọi product.isValidBid() -> Đủ bước giá?\n=> Cả 3 OK: Thực thi trừ tiền & cập nhật giá"
 
     %% ==========================================
     %% MỐI QUAN HỆ GIỮA CÁC LỚP
@@ -166,11 +169,10 @@ classDiagram
     %% ==========================================
     class LEGEND_GIAI_NGHIA_KY_HIEU {
         <<Chú thích>>
-        (-) : Private (Biến nội bộ, không gọi từ ngoài)
-        (+) : Public (Phương thức mở để các class gọi nhau)
+        (-) : Private (Biến nội bộ)
+        (+) : Public (Phương thức mở)
         (-->) : Liên kết mạnh
         (..>) : Liên kết phụ thuộc
-        ("1") : Có ĐÚNG 1 đối tượng tham gia
-        ("*") : Có NHIỀU đối tượng tham gia
-        (VD) : "1" Controller nhận lệnh Bid từ "*" (nhiều) User
+        ("1") : 1 đối tượng tham gia
+        ("*") : Nhiều đối tượng tham gia
     }
