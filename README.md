@@ -170,4 +170,4 @@ classDiagram
     class LEGEND_GIAI_NGHIA_KY_HIEU {
         <<Chú thích>>
     }
-    note for LEGEND_GIAI_NGHIA_KY_HIEU "(-) : Private (Biến nội bộ)<br>(+) : Public (Phương thức mở)<br>(-->) : Liên kết mạnh<br>(..>) : Liên kết phụ thuộc<br>(\"1\") : 1 đối tượng tham gia<br>(\"*\") : Nhiều đối tượng tham gia"
+    note for LEGEND_GIAI_NGHIA_KY_HIEU "(-) : Private (Biến nội bộ)<br>(+) : Public (Phương thức mở)<br>(-->) : Liên kết mạnh<br>(..>) : Liên kết phụ thuộc<br>(1) : 1 đối tượng tham gia<br>(*) : Nhiều đối tượng tham gia"
