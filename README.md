@@ -132,19 +132,22 @@ classDiagram
     note for User "GIẢI THÍCH:<br>• balance: Số dư ví hiện tại<br>• canAfford(): Check ví có đủ tiền không?<br>• deductMoney(): Trừ thẳng tiền khi bid<br>• refundMoney(): Hoàn tiền khi bị cướp top"
 
     %% ==========================================
-    %% 2. LỚP SẢN PHẨM (PRODUCT) - HUY
+    %% 2. LỚP SẢN PHẨM (ITEM) - HUY
     %% ==========================================
-    class Product {
-        -int id
-        -String name
-        -double currentPrice
-        -double stepPrice
-        -int currentWinnerId
-        +isValidBid(newBid: double) boolean
-        +updateBid(newBid: double, userId: int) void
+    class Item {
+        -id: String
+        -name: String
+        -description: String
+        -currentPrice: double
+        -bidIncrement: double
+        -currentWinnerId: String
+        -sellerId: String
+        -endTime: long
+        -approved: boolean
+        +isBiddingActive(): boolean
+        +placeBid(newBid: double, bidderId: String): void
     }
-    note for Product "GIẢI THÍCH:<br>• currentPrice: Giá cao nhất hiện tại<br>• stepPrice: Bước giá tối thiểu bắt buộc<br>• currentWinnerId: ID ông đang giữ Top 1<br>• isValidBid(): Giá mới >= Giá HT + Bước giá?<br>• updateBid(): Lưu Giá mới & ID người thắng"
-
+    note for Item "GIẢI THÍCH:<br>• currentPrice: Giá cao nhất hiện tại (khởi tạo bằng startingPrice)<br>• bidIncrement: Bước giá tối thiểu bắt buộc để đặt giá mới<br>• isBiddingActive(): Kiểm tra đồng thời (Đã duyệt VÀ Còn thời gian)<br>• placeBid(): Xử lý đặt giá qua 4 bước chặn:<br>  1. Chặn chủ đồ: bidderId != sellerId<br>  2. Chặn trạng thái: approved == true<br>  3. Chặn thời gian: currentTime < endTime<br>  4. Chặn bước giá: newBid >= currentPrice + bidIncrement<br>=> Đạt 4 điều kiện: Cập nhật currentPrice & currentWinnerId"
     %% ==========================================
     %% 3. LỚP ĐIỀU PHỐI (AUCTION CONTROLLER) - BẰNG
     %% ==========================================
