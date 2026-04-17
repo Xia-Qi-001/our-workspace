@@ -151,6 +151,7 @@ classDiagram
     class AuctionController {
         -int remainingTime
         -Product product
+        -User currentUser
         +isTimeValid() boolean
         +processBid(user: User, amount: double) void
         +endAuction() void
