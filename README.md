@@ -164,9 +164,9 @@ classDiagram
     %% ==========================================
     %% MỐI QUAN HỆ GIỮA CÁC LỚP
     %% ==========================================
-    AuctionController "1" --> "1" ITEM : Quản lý phiên
+    AuctionController "1" --> "1" Item : Quản lý phiên
     AuctionController "1" --> "*" User : Nhận lệnh Bid
-    User "1" ..> "1" ITEM : Trả giá
+    User "1" ..> "1" Item : Trả giá
 
     %% ==========================================
     %% CHÚ THÍCH KÝ HIỆU
