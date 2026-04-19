@@ -61,6 +61,15 @@ public class User {
     public void setStatus(boolean status){
         this.status = status;
     }
+    public boolean canAfford(double amount){
+        return this.balance >= amount;
+    }
+    public void deductMoney(double amount){
+        this.balance -= amount;
+    }
+    public void refundMoney(double amount){
+        this.balance += amount;
+    }
 }
 
 
