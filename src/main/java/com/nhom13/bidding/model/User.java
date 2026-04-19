@@ -52,7 +52,7 @@ public class User {
     public double getBalance(double balance){
         return balance;
     }
-    public void setBalace(double balance){
+    public void setBalance(double balance){
         this.balance = balance;
     }
     public boolean isStatus(){
