@@ -5,9 +5,9 @@ public class User {
     private String username;
     private String passwordHash;
     private String email;
-    private Role role;
+    private Role role;//dùng để xác định quyền trong enum
     private double balance;
-    private boolean status;
+    private boolean status;//dùng để xác định xem tài khoản có bị cấm do vi phạm không
     public User() {
     }
     public User(int id, String username, String passwordHash,String email, Role role, double balance, boolean status ) {
@@ -62,7 +62,7 @@ public class User {
         this.status = status;
     }
     public boolean canAfford(double amount){
-        return this.balance >= amount;
+        return this.balance >= amount;//nếu lớn hơn balance thì trả về true
     }
     public void deductMoney(double amount){
         this.balance -= amount;
