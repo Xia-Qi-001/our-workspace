@@ -162,7 +162,7 @@ classDiagram
     %% ==========================================
     AuctionController "1" --> "1" Product : Quản lý phiên
     AuctionController "1" --> "*" User : Nhận lệnh Bid
-    User "1" ..> "1" Item : Trả giá
+    User "1" ..> "1" Product : Trả giá
 
     %% ==========================================
     %% CHÚ THÍCH KÝ HIỆU
