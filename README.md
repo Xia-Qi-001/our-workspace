@@ -4,9 +4,9 @@
 
 | MSSV | Họ và tên | Vai trò chuyên môn | % Commit | Trạng thái |
 | :--- | :--- | :--- | :---: | :--- |
-| 25020038 | **Lê Hữu Bằng** | **Leader** |  |  |
-| 25020182 | **Nguyễn Nhất Huy** | **Coder** |  |  |
-| 25020159 | **Dương Bá Việt Hoàng** | `[Tự điền]` |  |  |
+| 25020038 | **Lê Hữu Bằng** | **Leader / Quản lý Trạng thái & Timer** |  |  |
+| 25020182 | **Nguyễn Nhất Huy** | **Coder / Quản lý Sản phẩm** |  |  |
+| 25020159 | **Dương Bá Việt Hoàng** | **Coder / Quản lý Người dùng** |  |  |
 
 > **Cách tính % Commit:** Tổng điểm % từ các Task đã được Leader Merge vào nhánh `main`. Con số này là căn cứ duy nhất để chia điểm project.
 ---
@@ -22,7 +22,7 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 * **Điểm số:** Chấm điểm theo nhóm. Nhóm tự phân chia điểm theo mức độ đóng góp, tổng điểm cá nhân bằng điểm chung của nhóm.
 ---
 
-## 📊 3. Tổng quan tiến độ (Cập nhật: 31/03/2026)
+## 📊 3. Tổng quan tiến độ (Cập nhật: 16/04/2026)
 
 **Core Engine:** 0/6 Module hoàn thành
 ![Progress](https://img.shields.io/badge/Progress-0%2F6-red?style=for-the-badge)
@@ -66,24 +66,22 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 
 - [ ] **Core Logic Đấu giá** (Rank S+ - 15%)
   - *Mô tả:* Trái tim dự án. Thuật toán nhận giá, so sánh, kiểm tra bước giá hợp lệ.
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Phụ trách:* `Toàn nhóm (Tích hợp thông qua OOP - Xem sơ đồ mục 6)`
 - [ ] **Lifecycle & Trạng thái** (Rank S - 12%)
   - *Mô tả:* Xử lý Timer đếm ngược, tự động chốt phiên và đổi trạng thái sản phẩm.
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Phụ trách:* `Lê Hữu Bằng`
 - [ ] **Quản lý Người dùng** (Rank A+ - 10%)
-  - *Mô tả:* Cấu trúc DB, Đăng ký/Đăng nhập, Phân quyền (Admin/Seller/Bidder).
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Mô tả:* Cấu trúc User, Đăng ký/Đăng nhập, Logic trừ/hoàn tiền.
+  - *Phụ trách:* `Dương Bá Việt Hoàng`
 - [ ] **Quản lý Sản phẩm** (Rank A+ - 10%)
-  - *Mô tả:* Seller thêm/sửa/xóa sản phẩm, duyệt hình ảnh và thông tin.
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Mô tả:* Seller thêm/sửa/xóa sản phẩm, logic duyệt giá đấu.
+  - *Phụ trách:* `Nguyễn Nhất Huy`
 - [ ] **Giao diện (UI JavaFX/Swing)** (Rank A - 8%)
-  - *Mô tả:* Kéo thả FXML, CSS. Vẽ các màn hình: Danh sách, Chi tiết, Phòng đấu giá.
-  - *Phụ trách:* `[Trống - Đợi claim]`
+  - *Mô tả:* Vẽ các màn hình. **Quy tắc:** Ai code logic phần nào, tự kéo UI màn hình phần đó.
+  - *Phụ trách:* `Toàn nhóm`
 - [ ] **Xử lý lỗi (Exceptions)** (Rank B+ - 5%)
   - *Mô tả:* Validate đầu vào (chống nhập bậy), try-catch để app không bị crash.
-  - *Phụ trách:* `[Trống - Đợi claim]`
-
----
+  - *Phụ trách:* `Nguyễn Nhất Huy`
 
 ### 🚀 Phase 2 - Nâng cao (40%)
 *Phần phân loại sinh viên Khá/Giỏi. Yêu cầu tuân thủ chặt chẽ kiến trúc.*
@@ -101,8 +99,6 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
   - *Mô tả:* Áp dụng Singleton/Factory; viết JUnit bảo vệ Core Logic.
   - *Phụ trách:* `[Trống - Đợi claim]`
 
----
-
 ### 🎁 Nhóm Bonus (Tối đa 10%)
 *Điểm thưởng cộng thêm cho nhóm (Vét điểm tuyệt đối).*
 
@@ -112,5 +108,66 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 - [ ] **Chart / CI/CD Actions** (Rank B+ - 5%)
   - *Mô tả:* Vẽ biểu đồ lịch sử giá realtime hoặc setup GitHub Actions tự động test.
   - *Phụ trách:* `[Trống - Đợi claim]`
----
+
 *Ghi chú: Bài tập lớn chiếm trọng số ~30% tổng điểm môn học. Anh em tập trung claim task và triển khai đúng tiến độ.*
+
+---
+
+## 🗺️ 6. Sơ đồ Kiến trúc & Quản lý Lớp (UML - V1)
+*Sơ đồ này là hợp đồng kỹ thuật cho Phase 1. Các thành viên bắt buộc tuân thủ tên phương thức để Leader tiến hành ghép code.*
+
+```mermaid
+classDiagram
+    %% ==========================================
+    %% 1. LỚP NGƯỜI DÙNG (USER) - HOÀNG
+    %% ==========================================
+    class User {
+        -int id
+        -String username
+        -double balance
+        +canAfford(amount: double) boolean
+        +deductMoney(amount: double) void
+        +refundMoney(amount: double) void
+    }
+    note for User "GIẢI THÍCH:<br>• balance: Số dư ví hiện tại<br>• canAfford(): Check ví có đủ tiền không?<br>• deductMoney(): Trừ thẳng tiền khi bid<br>• refundMoney(): Hoàn tiền khi bị cướp top"
+
+    %% ==========================================
+    %% 2. LỚP SẢN PHẨM (PRODUCT) - HUY
+    %% ==========================================
+    class Product {
+        -int id
+        -String name
+        -double currentPrice
+        -double stepPrice
+        -int currentWinnerId
+        +isValidBid(newBid: double): boolean
+        +updateBid(newBid: double, userId: int): void
+    }
+    note for Product "GIẢI THÍCH:<br>• currentPrice: Giá cao nhất hiện tại (khởi tạo bằng startingPrice)<br>• stepPrice: Bước giá tối thiểu bắt buộc<br>• currentWinnerId: ID ông đang giữ Top 1<br>• isValidBid(): Kiểm tra Giá mới >= Giá HT + Bước giá?<br>• updateBid(): Lưu Giá mới & ID người thắng"
+    %% ==========================================
+    %% 3. LỚP ĐIỀU PHỐI (AUCTION CONTROLLER) - BẰNG
+    %% ==========================================
+    class AuctionController {
+        -int remainingTime
+        -Product product
+        -User currentUser
+        +isTimeValid() boolean
+        +processBid(user: User, amount: double) void
+        +endAuction() void
+    }
+    note for AuctionController "HÀM CẦM TRỊCH processBid():<br>1. Gọi isTimeValid() -> Còn giờ không?<br>2. Gọi user.canAfford() -> Đủ tiền không?<br>3. Gọi product.isValidBid() -> Đủ bước giá?<br>=> Cả 3 OK: Thực thi trừ tiền & cập nhật giá"
+
+    %% ==========================================
+    %% MỐI QUAN HỆ GIỮA CÁC LỚP
+    %% ==========================================
+    AuctionController "1" --> "1" Product : Quản lý phiên
+    AuctionController "1" --> "*" User : Nhận lệnh Bid
+    User "1" ..> "1" Product : Trả giá
+
+    %% ==========================================
+    %% CHÚ THÍCH KÝ HIỆU
+    %% ==========================================
+    class LEGEND_GIAI_NGHIA_KY_HIEU {
+        <<Chú thích>>
+    }
+    note for LEGEND_GIAI_NGHIA_KY_HIEU "(-) : Private (Biến nội bộ)<br>(+) : Public (Phương thức mở)<br>(-->) : Liên kết mạnh<br>(..>) : Liên kết phụ thuộc<br>(1) : 1 đối tượng tham gia<br>(*) : Nhiều đối tượng tham gia"
