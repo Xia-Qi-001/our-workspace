@@ -180,7 +180,7 @@ classDiagram
 ```mermaid
 classDiagram
     %% ==========================================
-    %% 1. TẦNG DATA MODEL (Hoàng & Huy)
+    %% 1. TẦNG DATA MODEL
     %% ==========================================
     class User {
         -int id
@@ -192,7 +192,7 @@ classDiagram
         +deductMoney(amount: double) void
         +refundMoney(amount: double) void
     }
-    note for User "GIẢI THÍCH (LỚP USER):<br>• password: Thêm để check Login.<br>• balance: Số dư ví hiện tại.<br>• deductMoney(): Trừ tiền khi bid thành công.<br>• refundMoney(): Hoàn tiền khi bị cướp top."
+    note for User "GIẢI THÍCH (LỚP USER):<br>• password: Thêm để check Login.<br>• balance: Số dư ví hiện tại.<br>• deductMoney(): Trừ tiền khi bid.<br>• refundMoney(): Hoàn tiền cướp top.&nbsp;&nbsp;"
 
     class Product {
         -int id
@@ -206,10 +206,10 @@ classDiagram
         +isValidBid(newBid: double) boolean
         +updateBid(newBid: double, userId: int) void
     }
-    note for Product "GIẢI THÍCH (LỚP PRODUCT):<br>• sellerId: ID người bán (chặn buff giá).<br>• endTime: Thời gian chốt phiên đấu giá.<br>• status: Trạng thái (Đang đấu, Đã bán...).<br>• isValidBid(): Check Giá mới >= Giá HT + Bước giá.<br>• updateBid(): Lưu Giá mới & ID người thắng."
+    note for Product "GIẢI THÍCH (LỚP PRODUCT):<br>• sellerId: ID người bán (chặn buff).<br>• endTime: Thời gian chốt phiên đấu.<br>• status: Trạng thái (Đang đấu...).<br>• isValidBid(): Check Giá mới >= <br>&nbsp;&nbsp;(Giá hiện tại + Bước giá).<br>• updateBid(): Lưu Giá & ID thắng.&nbsp;&nbsp;"
 
     %% ==========================================
-    %% 2. TẦNG SYSTEM CORE (Leader Bằng)
+    %% 2. TẦNG SYSTEM CORE
     %% ==========================================
     class SessionManager {
         <<Singleton>>
@@ -220,7 +220,7 @@ classDiagram
         +logout() void
         +getCurrentUser() User
     }
-    note for SessionManager "QUẢN LÝ ĐĂNG NHẬP (SESSION):<br>• Singleton: Chỉ 1 instance duy nhất.<br>• Lưu trữ thông tin ông User đang online.<br>• login(): Xác thực đúng sai rồi lưu User lại.<br>• getCurrentUser(): Lấy ví tiền của ông đang dùng app."
+    note for SessionManager "QUẢN LÝ ĐĂNG NHẬP (SESSION):<br>• Singleton: Chỉ 1 instance duy nhất.<br>• Lưu trữ User đang dùng app.<br>• login(): Xác thực rồi lưu User lại.<br>• getCurrentUser(): Lấy ví ra xài.&nbsp;&nbsp;"
 
     class SceneManager {
         <<Singleton>>
@@ -231,10 +231,10 @@ classDiagram
         +switchScene(fxmlFile: String) void
         +showPopup(message: String) void
     }
-    note for SceneManager "QUẢN LÝ GIAO DIỆN (ROUTING):<br>• Giữ 1 cửa sổ gốc (Main Layout).<br>• switchScene(): Ném các Panel (FXML) vào khung giữa.<br>• Tuyệt đối cấm tạo Window/Stage lung tung gây loạn app."
+    note for SceneManager "QUẢN LÝ GIAO DIỆN (ROUTING):<br>• Giữ 1 cửa sổ gốc (Main Layout).<br>• switchScene(): Ném Panel vào khung.<br>• Tuyệt đối cấm tạo Window lung tung.&nbsp;&nbsp;"
 
     %% ==========================================
-    %% 3. TẦNG LOGIC NGHIỆP VỤ (Controller)
+    %% 3. TẦNG LOGIC NGHIỆP VỤ
     %% ==========================================
     class LiveAuctionController {
         <<Multi-Thread>>
@@ -245,7 +245,7 @@ classDiagram
         -broadcastUpdate() void
         +endAuction() void
     }
-    note for LiveAuctionController "TRÁI TIM HỆ THỐNG V2 (CONTROLLER):<br>• Dùng Đa luồng (Thread) để đếm ngược endTime.<br>• processBid(): Lấy User từ SessionManager -> Xử lý trừ tiền.<br>• Cập nhật UI realtime không làm đơ nút bấm."
+    note for LiveAuctionController "TRÁI TIM HỆ THỐNG (CONTROLLER):<br>• Đa luồng: Đếm ngược endTime.<br>• processBid(): Lấy User từ Session<br>&nbsp;&nbsp;rồi mới tiến hành check và trừ tiền.<br>• Cập nhật UI không làm đơ nút bấm.&nbsp;&nbsp;"
 
     %% ==========================================
     %% MỐI QUAN HỆ & LIÊN KẾT
@@ -257,6 +257,10 @@ classDiagram
     %% ==========================================
     %% CHÚ THÍCH KÝ HIỆU
     %% ==========================================
+    class LEGEND_GIAI_NGHIA_KY_HIEU_V2 {
+        <<Chú thích>>
+    }
+    note for LEGEND_GIAI_NGHIA_KY_HIEU_V2 "(-) Private nội bộ | (+) Public mở<br>(-->) Liên kết mạnh | (..>) Phụ thuộc<br>(1) Một đối tượng | (*) Nhiều đối tượng&nbsp;&nbsp;"
     class LEGEND_GIAI_NGHIA_KY_HIEU_V2 {
         <<Chú thích>>
     }
