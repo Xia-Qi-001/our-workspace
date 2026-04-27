@@ -113,7 +113,7 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 
 ---
 
-## 🗺️ 6. Sơ đồ Kiến trúc & Quản lý Lớp (UML - V1)
+## 🗺️ 6. Sơ đồ Kiến trúc & Quản lý Lớp (UML - V1) - Core Engine
 *Sơ đồ này là hợp đồng kỹ thuật cho Phase 1. Các thành viên bắt buộc tuân thủ tên phương thức để Leader tiến hành ghép code.*
 
 ```mermaid
@@ -171,3 +171,93 @@ classDiagram
         <<Chú thích>>
     }
     note for LEGEND_GIAI_NGHIA_KY_HIEU "(-) : Private (Biến nội bộ)<br>(+) : Public (Phương thức mở)<br>(-->) : Liên kết mạnh<br>(..>) : Liên kết phụ thuộc<br>(1) : 1 đối tượng tham gia<br>(*) : Nhiều đối tượng tham gia"
+```
+
+---
+
+## 🗺️ 7. Sơ đồ Kiến trúc mở rộng (UML - V2) - Tích hợp UI và Realtime
+
+```mermaid
+classDiagram
+    %% ==========================================
+    %% 1. TẦNG DATA MODEL (Hoàng & Huy)
+    %% ==========================================
+    class User {
+        -int id
+        -String username
+        -String password
+        -double balance
+        +getId() int
+        +getBalance() double
+        +deductMoney(amount: double) void
+        +refundMoney(amount: double) void
+    }
+    note for User "GIẢI THÍCH (LỚP USER):<br>• password: Thêm để check Login.<br>• balance: Số dư ví hiện tại.<br>• deductMoney(): Trừ tiền khi bid thành công.<br>• refundMoney(): Hoàn tiền khi bị cướp top."
+
+    class Product {
+        -int id
+        -String name
+        -double currentPrice
+        -double stepPrice
+        -int currentWinnerId
+        -int sellerId
+        -LocalDateTime endTime
+        -String status
+        +isValidBid(newBid: double) boolean
+        +updateBid(newBid: double, userId: int) void
+    }
+    note for Product "GIẢI THÍCH (LỚP PRODUCT):<br>• sellerId: ID người bán (chặn buff giá).<br>• endTime: Thời gian chốt phiên đấu giá.<br>• status: Trạng thái (Đang đấu, Đã bán...).<br>• isValidBid(): Check Giá mới >= Giá HT + Bước giá.<br>• updateBid(): Lưu Giá mới & ID người thắng."
+
+    %% ==========================================
+    %% 2. TẦNG SYSTEM CORE (Leader Bằng)
+    %% ==========================================
+    class SessionManager {
+        <<Singleton>>
+        -User currentUser
+        -static SessionManager instance
+        +getInstance() SessionManager
+        +login(user: String, pass: String) boolean
+        +logout() void
+        +getCurrentUser() User
+    }
+    note for SessionManager "QUẢN LÝ ĐĂNG NHẬP (SESSION):<br>• Singleton: Chỉ 1 instance duy nhất.<br>• Lưu trữ thông tin ông User đang online.<br>• login(): Xác thực đúng sai rồi lưu User lại.<br>• getCurrentUser(): Lấy ví tiền của ông đang dùng app."
+
+    class SceneManager {
+        <<Singleton>>
+        -Stage primaryStage
+        -static SceneManager instance
+        +getInstance() SceneManager
+        +setMainStage(stage: Stage) void
+        +switchScene(fxmlFile: String) void
+        +showPopup(message: String) void
+    }
+    note for SceneManager "QUẢN LÝ GIAO DIỆN (ROUTING):<br>• Giữ 1 cửa sổ gốc (Main Layout).<br>• switchScene(): Ném các Panel (FXML) vào khung giữa.<br>• Tuyệt đối cấm tạo Window/Stage lung tung gây loạn app."
+
+    %% ==========================================
+    %% 3. TẦNG LOGIC NGHIỆP VỤ (Controller)
+    %% ==========================================
+    class LiveAuctionController {
+        <<Multi-Thread>>
+        -Product product
+        -Thread timerThread
+        +startAuctionTimer() void
+        +processBid(amount: double) boolean
+        -broadcastUpdate() void
+        +endAuction() void
+    }
+    note for LiveAuctionController "TRÁI TIM HỆ THỐNG V2 (CONTROLLER):<br>• Dùng Đa luồng (Thread) để đếm ngược endTime.<br>• processBid(): Lấy User từ SessionManager -> Xử lý trừ tiền.<br>• Cập nhật UI realtime không làm đơ nút bấm."
+
+    %% ==========================================
+    %% MỐI QUAN HỆ & LIÊN KẾT
+    %% ==========================================
+    SessionManager "1" --> "1" User : Lưu trạng thái Online
+    LiveAuctionController "*" --> "1" Product : Quản lý 1 phiên đấu
+    LiveAuctionController ..> SessionManager : Lấy User để trừ tiền
+
+    %% ==========================================
+    %% CHÚ THÍCH KÝ HIỆU
+    %% ==========================================
+    class LEGEND_GIAI_NGHIA_KY_HIEU_V2 {
+        <<Chú thích>>
+    }
+    note for LEGEND_GIAI_NGHIA_KY_HIEU_V2 "(-) : Private (Biến nội bộ)<br>(+) : Public (Phương thức mở)<br>(-->) : Liên kết mạnh<br>(..>) : Liên kết phụ thuộc<br>(1) : 1 đối tượng tham gia<br>(*) : Nhiều đối tượng tham gia"
