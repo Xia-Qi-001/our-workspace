@@ -260,33 +260,62 @@ Mô tả cách các màn hình giao diện JavaFX kết nối với hệ thống
 ```mermaid
 classDiagram
     %% ==========================================
-    %% TẦNG GIAO DIỆN (UI CONTROLLERS)
+    %% 1. KHU VỰC CỦA HOÀNG (AUTH & PROFILE)
     %% ==========================================
     class LoginUIController {
         -TextField txtUsername
         -PasswordField txtPassword
         +handleLoginClick() void
     }
-    note for LoginUIController "MÀN ĐĂNG NHẬP (Hoàng):<br>• Gọi SessionManager.login()<br>• Đúng -> Gọi SceneManager qua Trang Chủ."
+    note for LoginUIController "MÀN ĐĂNG NHẬP:<br>• Xác thực qua SessionManager."
 
-    class HomeUIController {
-        -TableView productList
-        +loadProductData() void
-        +handleRowClick() void
+    class RegisterUIController {
+        -TextField txtNewUser
+        -PasswordField txtNewPass
+        +handleRegisterClick() void
     }
-    note for HomeUIController "TRANG CHỦ (Huy):<br>• Nắm giao diện danh sách Sản phẩm.<br>• Gọi SceneManager để mở Phòng đấu."
+    note for RegisterUIController "MÀN ĐĂNG KÝ:<br>• Tạo User mới, cấp id và balance gốc."
 
+    class ProfileUIController {
+        -TableView historyTable
+        +loadUserHistory() void
+    }
+    note for ProfileUIController "MÀN LỊCH SỬ:<br>• Xem các món đồ đã Thắng/Thua."
+
+    %% ==========================================
+    %% 2. KHU VỰC CỦA HUY (MARKETPLACE & SELLER)
+    %% ==========================================
+    class HomeUIController {
+        -GridPane productGrid
+        +loadActiveProducts() void
+        +handleItemClick() void
+    }
+    note for HomeUIController "TRANG CHỦ (CHỢ):<br>• Hiển thị danh sách đồ đang đấu giá."
+
+    class SellerUIController {
+        -TextField txtProductName
+        -TextField txtStartPrice
+        +handleCreateAuction() void
+    }
+    note for SellerUIController "MÀN ĐĂNG BÁN:<br>• Seller tạo Product mới đẩy lên sàn."
+
+    %% ==========================================
+    %% 3. KHU VỰC CỦA BẰNG (CORE AUCTION)
+    %% ==========================================
     class AuctionUIController {
         -Label lblTimer
         -Label lblPrice
         +handleBidClick() void
         +updateRealtimeUI(price, time) void
     }
-    note for AuctionUIController "PHÒNG ĐẤU GIÁ (Bằng):<br>• Bắt sự kiện người dùng bấm Bid.<br>• Đẩy lệnh xuống LiveAuctionController."
+    note for AuctionUIController "PHÒNG ĐẤU GIÁ (LIVE):<br>• Bắt lệnh Bid, kết nối với Đa luồng."
 
     %% ==========================================
     %% KẾT NỐI TỪ UI XUỐNG CORE HỆ THỐNG
     %% ==========================================
-    LoginUIController ..> SessionManager : Xác thực tài khoản
-    HomeUIController ..> SceneManager : Yêu cầu chuyển trang
-    AuctionUIController ..> LiveAuctionController : Giao tiếp 2 chiều
+    LoginUIController ..> SceneManager : Chuyển trang
+    RegisterUIController ..> SceneManager : Chuyển trang
+    HomeUIController ..> SceneManager : Mở phòng đấu
+    SellerUIController ..> SceneManager : Quay về Home
+    ProfileUIController ..> SceneManager : Chuyển trang
+    AuctionUIController ..> SceneManager : Thoát phòng
