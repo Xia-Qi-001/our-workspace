@@ -253,3 +253,40 @@ classDiagram
     SessionManager "1" --> "1" User : Lưu trạng thái Online
     LiveAuctionController "*" --> "1" Product : Quản lý 1 phiên đấu
     LiveAuctionController ..> SessionManager : Lấy User để trừ tiền
+```
+🖥️ 7.1. Kiến trúc Giao diện (Tầng View - UI)
+Mô tả cách các màn hình giao diện JavaFX kết nối với hệ thống Core ở trên. Đảm bảo tuân thủ nguyên tắc: UI không tự xử lý logic.
+
+```mermaid
+classDiagram
+    %% ==========================================
+    %% TẦNG GIAO DIỆN (UI CONTROLLERS)
+    %% ==========================================
+    class LoginUIController {
+        -TextField txtUsername
+        -PasswordField txtPassword
+        +handleLoginClick() void
+    }
+    note for LoginUIController "MÀN ĐĂNG NHẬP (Hoàng):<br>• Gọi SessionManager.login()<br>• Đúng -> Gọi SceneManager qua Trang Chủ."
+
+    class HomeUIController {
+        -TableView productList
+        +loadProductData() void
+        +handleRowClick() void
+    }
+    note for HomeUIController "TRANG CHỦ (Huy):<br>• Nắm giao diện danh sách Sản phẩm.<br>• Gọi SceneManager để mở Phòng đấu."
+
+    class AuctionUIController {
+        -Label lblTimer
+        -Label lblPrice
+        +handleBidClick() void
+        +updateRealtimeUI(price, time) void
+    }
+    note for AuctionUIController "PHÒNG ĐẤU GIÁ (Bằng):<br>• Bắt sự kiện người dùng bấm Bid.<br>• Đẩy lệnh xuống LiveAuctionController."
+
+    %% ==========================================
+    %% KẾT NỐI TỪ UI XUỐNG CORE HỆ THỐNG
+    %% ==========================================
+    LoginUIController ..> SessionManager : Xác thực tài khoản
+    HomeUIController ..> SceneManager : Yêu cầu chuyển trang
+    AuctionUIController ..> LiveAuctionController : Giao tiếp 2 chiều
