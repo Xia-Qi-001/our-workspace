@@ -1,192 +1,118 @@
-package com.nhom13.bidding;
 
-import java.util.HashMap;
+package com.nhom13.bidding;
+import java.time.LocalDateTime;
 
 /**
- * Product - Lớp đại diện cho một sản phẩm trong hệ thống đấu giá.
- * Giữ nguyên logic xử lý thời gian, hình ảnh và bảo mật từ lớp Item cũ.
+ * Product - Giai đoạn 2: Tích hợp UI và Realtime.
+ * Được nâng cấp từ Stage 1 để hỗ trợ đa luồng, quản lý thời gian thực và bảo mật.
  */
 public class Product {
-    private String id;
+    // --- 1. Thuộc tính (Attributes Nâng cấp) ---
+    private int id;
     private String name;
+    private double currentPrice;
+    private double stepPrice;
+    private int currentWinnerId;
+
+    private int sellerId;               // ID người bán (để chặn tự đặt giá)
+    private LocalDateTime endTime;      // Thời gian kết thúc (hỗ trợ Countdown)
+    private String status;              // Trạng thái: "Chờ duyệt", "Đang đấu giá", "Đã bán", "Hủy"
+
     private String description;
     private String imagePath;
-    private double startingPrice;
-    private double currentPrice;
-    private boolean approved = false;
-    private double stepPrice;
-    private String currentWinnerId;
-    private String sellerId;
-    private long endTime;
 
-    public Product(String id, String name, String description, double startingPrice, double stepPrice, String sellerId, long durationInSeconds) {
+    public Product(int id, String name, double startingPrice, double stepPrice, int sellerId, LocalDateTime endTime) {
         this.id = id;
         this.name = name;
-        this.description = description;
-        this.startingPrice = startingPrice;
-        this.currentPrice = startingPrice; // Giá hiện tại bắt đầu bằng giá khởi điểm
-
-        // Gán các giá trị mới từ tham số truyền vào
+        this.currentPrice = startingPrice;
         this.stepPrice = stepPrice;
-        this.sellerId = sellerId;
-        this.currentWinnerId = "None"; // Mặc định chưa có người thắng
+        this.currentWinnerId = -1;
 
-        // Tính toán thời điểm kết thúc dựa trên durationInSeconds
-        this.endTime = System.currentTimeMillis() + (durationInSeconds * 1000);
+        // Giai đoạn 2 bổ sung
+        this.sellerId = sellerId;
+        this.endTime = endTime;
+        this.status = "Chờ duyệt"; // Trạng thái mặc định ban đầu
     }
 
-    // Hàm kiểm tra thời gian
+    // --- 2. Logic nghiệp vụ (Business Logic) ---
+
+    /**
+     * Kiểm tra phiên đấu giá có đang hoạt động hay không.
+     * Điều kiện: Trạng thái là "Đang đấu giá" và thời gian hiện tại chưa quá giờ kết thúc.
+     */
     public boolean isBiddingActive() {
-        return System.currentTimeMillis() < this.endTime && this.approved;
+        return "Đang đấu giá".equals(this.status) && LocalDateTime.now().isBefore(this.endTime);
     }
 
     /**
-     * Kiểm tra giá đặt mới có hợp lệ theo bước giá hay không.
+     * Chốt chặn bảo mật: Kiểm tra xem người đặt giá có phải chủ đồ (Seller) không.
      */
+    public boolean isNotSeller(int bidderId) {
+        return bidderId != this.sellerId;
+    }
+
     public boolean isValidBid(double newBid) {
         return newBid >= (this.currentPrice + this.stepPrice);
     }
 
+    // --- 3. Tương tác đa luồng và Realtime (Multi-thread) ---
+
     /**
-     * Cập nhật thông tin người thắng và giá hiện tại.
+     * Cập nhật Thread-safe: Sử dụng synchronized để đảm bảo khi nhiều người cùng Bid một lúc,
+     * dữ liệu giá và người thắng không bị sai lệch (Race condition).
      */
-    public void updateBid(double newBid, String bidderId) {
+    public synchronized void updateBid(double newBid, int userId) {
         this.currentPrice = newBid;
-        this.currentWinnerId = bidderId;
+        this.currentWinnerId = userId;
     }
 
-    // --- Các phương thức Setter có kiểm tra logic ---
-
-    public void setName(String name) {
-        if (name != null && !name.isEmpty()) {
-            this.name = name;
-        }
-    }
-
-    public void setId(String id) {
-        if (id != null && !id.isEmpty()) {
-            this.id = id;
-        }
-    }
-
-    public void setImagePath(String imagePath) {
-        if (imagePath != null && !imagePath.isEmpty()) {
-            String lowerPath = imagePath.toLowerCase();
-            if (lowerPath.endsWith(".jpg") || lowerPath.endsWith(".png") || lowerPath.endsWith(".jpeg")) {
-                this.imagePath = imagePath;
-            } else {
-                System.out.println("Lỗi: Định dạng ảnh không hỗ trợ (chỉ nhận các file có đuôi .jpg, .png, .jpeg)");
-            }
-        }
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
-
-    public void setStartingPrice(double startingPrice) {
-        if (startingPrice < 0) {
-            System.out.println("Lỗi: Giá không được âm");
-            this.startingPrice = 0;
-        } else {
-            this.startingPrice = startingPrice;
-        }
-    }
-
-    // --- Các hàm Getter ---
-
-    public String getName() { return name; }
-    public String getId() { return this.id; }
-    public String getImagePath() { return this.imagePath; }
-    public boolean isApproved() { return approved; }
-    public double getCurrentPrice() { return this.currentPrice; }
-    public String getDescription() { return description; }
-    public double getStartingPrice() { return startingPrice; }
-    public double getStepPrice() { return stepPrice; }
-    public String getCurrentWinnerId() { return currentWinnerId; }
-    public String getSellerId() { return sellerId; }
-    public long getEndTime() { return endTime; }
-
-    // --- Các hàm Setter còn lại ---
-
-    public void setDescription(String description) { this.description = description; }
-    public void setCurrentPrice(double currentPrice) { this.currentPrice = currentPrice; }
-    public void setStepPrice(double stepPrice) { this.stepPrice = stepPrice; }
-    public void setCurrentWinnerId(String currentWinnerId) { this.currentWinnerId = currentWinnerId; }
-    public void setSellerId(String sellerId) { this.sellerId = sellerId; }
-    public void setEndTime(long endTime) { this.endTime = endTime; }
+    // --- 4. Kết nối hệ thống (System Integration Hooks) ---
 
     /**
-     * Đặt giá (bid) cho sản phẩm đấu giá.
+     * Phương thức đặt giá tổng hợp: Sử dụng bởi Controller sau khi lấy UserID từ SessionManager.
      */
-    public void placeBid(double newBid, String bidderId){
+    public void placeBid(double newBid, int bidderId) throws Exception {
+        if (!isNotSeller(bidderId)) {
+            throw new Exception("Bạn không thể đặt giá cho sản phẩm của chính mình.");
+        }
+        if (!isBiddingActive()) {
+            throw new Exception("Phiên đấu giá hiện không khả dụng hoặc đã kết thúc.");
+        }
+        if (!isValidBid(newBid)) {
+            throw new Exception("Giá đặt phải lớn hơn giá hiện tại ít nhất " + stepPrice);
+        }
+
+        // Cập nhật an toàn
         updateBid(newBid, bidderId);
-        System.out.println("Đặt giá thành công! Sản phẩm: " + this.name
-                + " | Giá mới: " + this.currentPrice
-                + " | Người đặt: " + this.currentWinnerId);
-    }
-}
-
-/**
- * ProductManager - Lớp quản lý danh sách các sản phẩm đấu giá.
- */
-class ProductManager {
-    private HashMap<String, Product> productList = new HashMap<>();
-
-    // Hàm thêm các sản phẩm đấu giá
-    public void addProduct(Product product) {
-        if (productList.containsKey(product.getId())) {
-            System.out.println("Lỗi: Mã sản phẩm đã tồn tại");
-        } else {
-            productList.put(product.getId(), product);
-            System.out.println("Thêm thành công: " + product.getName());
-        }
     }
 
-    // Hàm duyệt các sản phẩm để đưa ra đấu giá
-    public void approveProduct(String id) {
-        Product product = productList.get(id);
-        if (product != null) {
-            product.setApproved(true);
-            System.out.println("Sản phẩm " + product.getName() + " đã được duyệt thành công");
-        } else {
-            System.out.println("Lỗi: Không tìm thấy mã sản phẩm để duyệt");
-        }
-    }
-
-    public void showMarketplace() {
-        System.out.println("--- DANH SÁCH SẢN PHẨM ĐANG ĐẤU GIÁ ---");
-        for (Product product : productList.values()) {
-            if (product.isApproved()) {
-                System.out.println(product.getId() + " - " + product.getName() + ": " + product.getCurrentPrice());
+    /**
+     * Tự động kiểm tra và cập nhật trạng thái khi hết thời gian.
+     * LiveAuctionController sẽ gọi hàm này trong TimerThread.
+     */
+    public void checkAndSetStatus() {
+        if (LocalDateTime.now().isAfter(this.endTime) && "Đang đấu giá".equals(this.status)) {
+            if (this.currentWinnerId != -1) {
+                this.status = "Đã bán";
+            } else {
+                this.status = "Hủy";
             }
         }
     }
 
-    // Hàm xóa sản phẩm
-    public void deleteProduct(String id) {
-        if (productList.containsKey(id)) {
-            productList.remove(id);
-            System.out.println("Xóa sản phẩm thành công");
-        } else {
-            System.out.println("Lỗi: Không tìm thấy sản phẩm");
-        }
-    }
+    // --- Getters & Setters ---
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public double getCurrentPrice() { return currentPrice; }
+    public double getStepPrice() { return stepPrice; }
+    public int getCurrentWinnerId() { return currentWinnerId; }
+    public int getSellerId() { return sellerId; }
+    public LocalDateTime getEndTime() { return endTime; }
+    public String getStatus() { return status; }
+    public String getDescription() { return description; }
+    public String getImagePath() { return imagePath; }
 
-    // Hàm lấy danh sách sản phẩm theo Seller
-    public void showMyProducts(String sellerId) {
-        System.out.println("Sản phẩm của bạn:");
-        for (Product product : productList.values()) {
-            if (product.getSellerId().equals(sellerId))
-                System.out.println(product.getName());
-        }
-    }
-
-    public void checkAndCloseExpiredProducts() {
-        for (Product product : productList.values()) {
-            if (System.currentTimeMillis() > product.getEndTime() && product.isApproved()) {
-                System.out.println("Phiên đấu giá sản phẩm " + product.getName() + " đã kết thúc");
-            }
-        }
-    }
+    public void setStatus(String status) { this.status = status; }
+    public void setDescription(String description) { this.description = description; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }
