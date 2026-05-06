@@ -257,7 +257,7 @@ classDiagram
 🖥️ 8. Kiến trúc Giao diện (Tầng View - UI)
 *Mô tả cách các màn hình giao diện JavaFX kết nối với hệ thống Core ở trên. Đảm bảo tuân thủ nguyên tắc: UI không tự xử lý logic.
 
-```
+```mermaid
 classDiagram
     %% ==========================================
     %% 1. KHU VỰC CỦA HOÀNG (AUTH & PROFILE)
