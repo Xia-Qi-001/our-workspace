@@ -324,6 +324,26 @@ classDiagram
     LoginUIController ..> SceneManager : Chuyển trang
     RegisterUIController ..> SceneManager : Chuyển trang
     HomeUIController ..> SceneManager : Mở phòng đấu
-    SellerUIController ..> SceneManager : Quay về Home
-    ProfileUIController ..> SceneManager : Chuyển trang
-    AuctionUIController ..> SceneManager : Thoát phòng
+```
+### 📖 Từ điển Giải nghĩa Giao diện (UI Controllers)
+
+**1. Phân hệ Tài khoản (Module_Auth_HOANG)**
+
+* **`LoginUIController`**: Nắm màn hình Đăng nhập. Nhiệm vụ: Lấy Text từ ô nhập -> Trực tiếp gọi `SessionManager.login()`. Nếu trả về `true` (thành công) thì gọi `SceneManager` để chuyển sang màn Home.
+* **`RegisterUIController`**: Nắm màn hình Đăng ký. Nhiệm vụ: Gom dữ liệu -> Tạo đối tượng `User` mới -> Đẩy vào hệ thống. Xong xuôi thì đẩy người dùng về lại màn Đăng nhập.
+* **`ProfileUIController`**: Nắm màn hình Lịch sử. Nhiệm vụ: Gọi `SessionManager.getCurrentUser()` để biết ai đang xem -> Lọc danh sách sản phẩm ông này đã thắng/thua để hiển thị lên bảng (`TableView`).
+
+**2. Phân hệ Chợ & Bán hàng (Module_Market_HUY)**
+
+* **`HomeUIController`**: Nắm Trang chủ. Nhiệm vụ: Load toàn bộ `Product` đang có trạng thái "Đang đấu" lên lưới (`GridPane`). Khi click vào một món -> Gọi `SceneManager` mở Phòng đấu giá (kèm theo ID sản phẩm).
+* **`SellerUIController`**: Nắm form Đăng bán. Nhiệm vụ: Validate dữ liệu (không nhập giá âm, tên không để trống) -> Tạo đối tượng `Product` mới đẩy lên sàn.
+
+**3. Phân hệ Live Auction (Module_Auction_BANG)**
+
+* **`AuctionUIController`**: Nắm Phòng đấu giá trực tiếp. Nhiệm vụ:
+    * Nhận dữ liệu Realtime từ `LiveAuctionController` (Core) để cập nhật liên tục `lblTimer` (Đồng hồ) và `lblPrice` (Giá).
+    * Khi bấm Bid -> Đẩy lệnh xuống `processBid()` của Tầng Logic. **Tuyệt đối UI không tự xử lý tính toán trừ tiền.**
+
+**👉 Nguyên tắc cốt lõi toàn Phase 2:**
+
+Tất cả các hành động chuyển từ màn hình này sang màn hình khác ĐỀU PHẢI gọi qua `SceneManager` (Ví dụ: `SceneManager.getInstance().switchScene("Home.fxml")`). Cấm anh em nào tự ý dùng lệnh `new Stage().show()`.
