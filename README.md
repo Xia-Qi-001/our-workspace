@@ -259,56 +259,64 @@ classDiagram
 
 ```mermaid
 classDiagram
+    %% KHAI BÁO CÁC CLASS ĐIỀU HƯỚNG DÙNG CHUNG
+    class SceneManager {
+        <<Singleton>>
+    }
+
     %% ==========================================
-    %% 1. KHU VỰC CỦA HOÀNG (AUTH & PROFILE)
+    %% 1. PHÂN HỆ CỦA HOÀNG (AUTH & PROFILE)
     %% ==========================================
-    class LoginUIController {
-        -TextField txtUsername
-        -PasswordField txtPassword
-        +handleLoginClick() void
+    namespace Module_Auth_HOANG {
+        class LoginUIController {
+            -TextField txtUsername
+            -PasswordField txtPassword
+            +handleLoginClick() void
+        }
+        class RegisterUIController {
+            -TextField txtNewUser
+            -PasswordField txtNewPass
+            +handleRegisterClick() void
+        }
+        class ProfileUIController {
+            -TableView historyTable
+            +loadUserHistory() void
+        }
     }
     note for LoginUIController "MÀN ĐĂNG NHẬP:<br>• Xác thực qua SessionManager."
-
-    class RegisterUIController {
-        -TextField txtNewUser
-        -PasswordField txtNewPass
-        +handleRegisterClick() void
-    }
-    note for RegisterUIController "MÀN ĐĂNG KÝ:<br>• Tạo User mới, cấp id và balance gốc."
-
-    class ProfileUIController {
-        -TableView historyTable
-        +loadUserHistory() void
-    }
+    note for RegisterUIController "MÀN ĐĂNG KÝ:<br>• Tạo User mới, cấp id và ví."
     note for ProfileUIController "MÀN LỊCH SỬ:<br>• Xem các món đồ đã Thắng/Thua."
 
     %% ==========================================
-    %% 2. KHU VỰC CỦA HUY (MARKETPLACE & SELLER)
+    %% 2. PHÂN HỆ CỦA HUY (MARKETPLACE)
     %% ==========================================
-    class HomeUIController {
-        -GridPane productGrid
-        +loadActiveProducts() void
-        +handleItemClick() void
+    namespace Module_Market_HUY {
+        class HomeUIController {
+            -GridPane productGrid
+            +loadActiveProducts() void
+            +handleItemClick() void
+        }
+        class SellerUIController {
+            -TextField txtProductName
+            -TextField txtStartPrice
+            +handleCreateAuction() void
+        }
     }
-    note for HomeUIController "TRANG CHỦ (CHỢ):<br>• Hiển thị danh sách đồ đang đấu giá."
+    note for HomeUIController "TRANG CHỦ (CHỢ):<br>• Hiển thị danh sách đồ đang đấu."
+    note for SellerUIController "MÀN ĐĂNG BÁN:<br>• Tạo Product mới đẩy lên sàn."
 
-    class SellerUIController {
-        -TextField txtProductName
-        -TextField txtStartPrice
-        +handleCreateAuction() void
-    }
-    note for SellerUIController "MÀN ĐĂNG BÁN:<br>• Seller tạo Product mới đẩy lên sàn."
-
     %% ==========================================
-    %% 3. KHU VỰC CỦA BẰNG (CORE AUCTION)
+    %% 3. PHÂN HỆ CỦA BẰNG (CORE AUCTION)
     %% ==========================================
-    class AuctionUIController {
-        -Label lblTimer
-        -Label lblPrice
-        +handleBidClick() void
-        +updateRealtimeUI(price, time) void
+    namespace Module_Auction_BANG {
+        class AuctionUIController {
+            -Label lblTimer
+            -Label lblPrice
+            +handleBidClick() void
+            +updateRealtimeUI(price, time) void
+        }
     }
-    note for AuctionUIController "PHÒNG ĐẤU GIÁ (LIVE):<br>• Bắt lệnh Bid, kết nối với Đa luồng."
+    note for AuctionUIController "PHÒNG ĐẤU GIÁ (LIVE):<br>• Bắt lệnh Bid, nối xuống Đa luồng."
 
     %% ==========================================
     %% KẾT NỐI TỪ UI XUỐNG CORE HỆ THỐNG
