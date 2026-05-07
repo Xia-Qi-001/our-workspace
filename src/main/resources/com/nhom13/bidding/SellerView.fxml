@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+
+<!-- SellerView.fxml - Màn hình Đăng bán sản phẩm -->
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.nhom13.bidding.SellerUIController"
+      prefWidth="500" prefHeight="400"
+      alignment="CENTER" spacing="20"
+      style="-fx-background-color: #f5f6fa;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER"
+          style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+        <Label text="📦 Đăng bán sản phẩm mới"
+               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Form -->
+    <VBox spacing="15" alignment="CENTER"
+          style="-fx-padding: 30; -fx-max-width: 400;">
+
+        <!-- Tên sản phẩm -->
+        <Label text="Tên sản phẩm:"
+               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <TextField fx:id="txtProductName"
+                   promptText="Nhập tên sản phẩm..."
+                   style="-fx-font-size: 14px; -fx-padding: 10; -fx-border-color: #bdc3c7;
+                          -fx-border-radius: 5; -fx-background-radius: 5;"/>
+
+        <!-- Giá khởi điểm -->
+        <Label text="Giá khởi điểm (VNĐ):"
+               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <TextField fx:id="txtStartPrice"
+                   promptText="Nhập giá khởi điểm..."
+                   style="-fx-font-size: 14px; -fx-padding: 10; -fx-border-color: #bdc3c7;
+                          -fx-border-radius: 5; -fx-background-radius: 5;"/>
+
+        <!-- Buttons -->
+        <HBox spacing="15" alignment="CENTER"
+              style="-fx-padding: 10 0 0 0;">
+            <Button text="✅ Đăng bán"
+                    onAction="#handleCreateAuction"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14px;
+                           -fx-padding: 10 30; -fx-background-radius: 5; -fx-cursor: hand;"/>
+            <Button text="⬅ Quay lại"
+                    onAction="#handleBackToHome"
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 14px;
+                           -fx-padding: 10 30; -fx-background-radius: 5; -fx-cursor: hand;"/>
+        </HBox>
+    </VBox>
+
+</VBox>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a2ebf55d-758c-41f6-9c37-4c68dad8bbc4" name="Changes" comment="update Product version 2" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="main" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="feature/huy" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="develop" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;1Karinaa&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Xia-Qi-001/our-workspace.git",
+    "accountId": "98a62292-2a21-4fe4-be14-e80f2bd1514f"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="3BuyyDbZortSFcpUL69glj137kS" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.MainApp.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/huy",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Admin/our-workspace"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.nhom13.bidding" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.nhom13.bidding.view.Main" />
+      <module name="bidding-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.nhom13.bidding.view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.nhom13.bidding.view.MainApp" />
+      <module name="bidding-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.nhom13.bidding.view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.MainApp" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a2ebf55d-758c-41f6-9c37-4c68dad8bbc4" name="Changes" comment="" />
+      <created>1775353501734</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1775353501734</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Sửa lại bảng phân công">
+      <option name="closed" value="true" />
+      <created>1775355673060</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1775355673060</updated>
+    </task>
+    <task id="LOCAL-00002" summary="add Product.java">
+      <option name="closed" value="true" />
+      <created>1775356286881</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1775356286881</updated>
+    </task>
+    <task id="LOCAL-00003" summary="update productManager">
+      <option name="closed" value="true" />
+      <created>1775529028804</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1775529028804</updated>
+    </task>
+    <task id="LOCAL-00004" summary="update Item">
+      <option name="closed" value="true" />
+      <created>1775814890539</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1775814890539</updated>
+    </task>
+    <task id="LOCAL-00005" summary="cập nhật thêm các tính năng, hoàn thiện Item">
+      <option name="closed" value="true" />
+      <created>1776131187716</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1776131187716</updated>
+    </task>
+    <task id="LOCAL-00006" summary="add Exceptions and BidController&#10;, modified Item">
+      <option name="closed" value="true" />
+      <created>1776258489296</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1776258489296</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update UML">
+      <option name="closed" value="true" />
+      <created>1776421606187</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1776421606187</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add Product">
+      <option name="closed" value="true" />
+      <created>1776679976005</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1776679976005</updated>
+    </task>
+    <task id="LOCAL-00009" summary="add Product">
+      <option name="closed" value="true" />
+      <created>1776697900752</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1776697900762</updated>
+    </task>
+    <task id="LOCAL-00010" summary="update UML">
+      <option name="closed" value="true" />
+      <created>1776698109106</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1776698109106</updated>
+    </task>
+    <task id="LOCAL-00011" summary="update Product version 2">
+      <option name="closed" value="true" />
+      <created>1778078557611</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1778078557611</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Sửa lại bảng phân công" />
+    <MESSAGE value="add Product.java" />
+    <MESSAGE value="update productManager" />
+    <MESSAGE value="update Item" />
+    <MESSAGE value="cập nhật thêm các tính năng, hoàn thiện Item" />
+    <MESSAGE value="add Exceptions and BidController&#10;, modified Item" />
+    <MESSAGE value="add Product" />
+    <MESSAGE value="update UML" />
+    <MESSAGE value="update Product version 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="update Product version 2" />
+  </component>
+</project>
