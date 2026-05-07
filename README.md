@@ -254,7 +254,7 @@ classDiagram
     LiveAuctionController "*" --> "1" Product : Quản lý 1 phiên đấu
     LiveAuctionController ..> SessionManager : Lấy User để trừ tiền
 ```
-🖥️ 8. Kiến trúc Giao diện (Tầng View - UI)
+## 🖥️ 8. Kiến trúc Giao diện (Tầng View - UI)
 *Mô tả cách các màn hình giao diện JavaFX kết nối với hệ thống Core ở trên. Đảm bảo tuân thủ nguyên tắc: UI không tự xử lý logic.
 
 ```mermaid
