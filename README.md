@@ -22,14 +22,17 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 * **Điểm số:** Chấm điểm theo nhóm. Nhóm tự phân chia điểm theo mức độ đóng góp, tổng điểm cá nhân bằng điểm chung của nhóm.
 ---
 
-## 📊 3. Tổng quan tiến độ (Cập nhật: 16/04/2026)
+### 📊 3. Tổng quan tiến độ (Cập nhật: 07/05/2026)
 
-**Core Engine:** 0/6 Module hoàn thành
-![Progress](https://img.shields.io/badge/Progress-0%2F6-red?style=for-the-badge)
+*Tiến độ được đánh giá theo % khối lượng công việc thực tế đã hoàn thành và được Leader merge thành công vào nhánh chính, do các phân hệ được phát triển và lắp ghép song song.*
 
-**Advanced Implementation:** 0/7 Module hoàn thành
-![Progress](https://img.shields.io/badge/Progress-0%2F7-orange?style=for-the-badge)
+**Phase 1: Core Engine (Cốt lõi Logic & Dữ liệu)**
+`[▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░] 80%`
+> Trạng thái: Đã hoàn thiện luồng đấu giá cơ bản, đang test độ ổn định.
 
+**Phase 2: Advanced Implementation (Giao diện UI & Đa luồng)**
+`[▓▓▓▓░░░░░░░░░░░░░░░░] 20%`
+> Trạng thái: Đã chốt kiến trúc Routing và Layout, anh em đang kéo giao diện FXML.
 ---
 
 ## ⚖️ 4. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
