@@ -2,11 +2,11 @@
 
 ## 👥 Thành viên nhóm & Theo dõi tiến độ
 
-| MSSV | Họ và tên | Vai trò chuyên môn | % Commit | Trạng thái |
-| :--- | :--- | :--- | :---: | :--- |
-| 25020038 | **Lê Hữu Bằng** | **Leader / Quản lý Trạng thái & Timer** |  |  |
-| 25020182 | **Nguyễn Nhất Huy** | **Coder / Quản lý Sản phẩm** |  |  |
-| 25020159 | **Dương Bá Việt Hoàng** | **Coder / Quản lý Người dùng** |  |  |
+| MSSV | Họ và tên | Phụ Trách | % Commit |
+| :--- | :--- | :--- | :---: |
+| 25020038 | **Lê Hữu Bằng** | **Leader / Hệ thống & logic đa luồng** | **33,3%** |
+| 25020182 | **Nguyễn Nhất Huy** | **Coder / Sản phẩm & Trang chủ** | **33,3%** |
+| 25020159 | **Dương Bá Việt Hoàng** | **Coder / Người dùng & Đăng nhập** | **33,3%** |
 
 > **Cách tính % Commit:** Tổng điểm % từ các Task đã được Leader Merge vào nhánh `main`. Con số này là căn cứ duy nhất để chia điểm project.
 ---
