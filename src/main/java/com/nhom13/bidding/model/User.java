@@ -3,21 +3,21 @@ package com.nhom13.bidding.model;
 public class User {
     private int id;
     private String username;
-    private String passwordHash;
+    private String password;
     private String email;
     private Role role;//dùng để xác định quyền trong enum
     private double balance;
-    private boolean status;//dùng để xác định xem tài khoản có bị cấm do vi phạm không
+    private boolean active;//dùng để xác định xem tài khoản có bị cấm do vi phạm không
     public User() {
     }
-    public User(int id, String username, String passwordHash,String email, Role role, double balance, boolean status ) {
+    public User(int id, String username, String password,String email, Role role, double balance, boolean status ) {
         this.id = id;
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.email = email;
         this.role = role;
-        this.balance = 0.0;
-        this.status = true;
+        this.balance = balance;
+        this.active = active;
     }
     public int getId(){
         return id;
@@ -31,11 +31,11 @@ public class User {
     public void setUsername(String username){
         this.username = username;
     }
-    public String getPasswordHash(){
-        return passwordHash;
+    public String getPassword(){
+        return password;
     }
-    public void setPasswordHash(String passwordHash){
-        this.passwordHash = passwordHash;
+    public void setPassword(String password){
+        this.password = password;
     }
     public String getEmail(){
         return email;
@@ -49,20 +49,20 @@ public class User {
     public void setRole(Role role){
         this.role = role;
     }
-    public double getBalance(double balance){
+    public double getBalance(){
         return balance;
     }
     public void setBalance(double balance){
         this.balance = balance;
     }
-    public boolean isStatus(){
-        return status;
+    public boolean isActive(){
+        return active;
     }
-    public void setStatus(boolean status){
-        this.status = status;
+    public void setActive(boolean active){
+        this.active = active;
     }
     public boolean canAfford(double amount){
-        return this.balance >= amount;//nếu lớn hơn balance thì trả về true
+        return this.balance >= amount;//nếu lớn hơn amount thì trả về true
     }
     public void deductMoney(double amount){
         this.balance -= amount;

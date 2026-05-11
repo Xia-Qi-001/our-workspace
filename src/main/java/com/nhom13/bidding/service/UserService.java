@@ -35,12 +35,12 @@ public class UserService {
             throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
         }
         //kiểm tra xem tài khoản có đang bị khóa không
-        if(!user.isStatus()){
+        if(!user.isActive()){
             throw new Exception("Tài khoản này đã bị khóa");
         }
         //Xác thực mật khẩu
         //BCrypt sẽ tự động giải mã và so sánh với người dùng
-        boolean isMatch = BCrypt.checkpw(rawPassword, user.getPasswordHash());
+        boolean isMatch = BCrypt.checkpw(rawPassword, user.getPassword());
         if(!isMatch){
             throw new Exception("sai tên đăng nhập hoặc mật khẩu!");
         }
