@@ -183,19 +183,24 @@ classDiagram
 ```mermaid
 classDiagram
     %% ==========================================
-    %% 1. TẦNG DATA MODEL (Chỉ ghi chú phần mới)
+    %% 1. TẦNG DATA MODEL
     %% ==========================================
     class User {
         -int id
         -String username
         -String password
+        -String email
+        -Role role
         -double balance
+        -boolean active
         +getId() int
         +getBalance() double
+        +isActive() boolean
+        +canAfford(amount: double) boolean
         +deductMoney(amount: double) void
         +refundMoney(amount: double) void
     }
-    note for User "BỔ SUNG V2:<br>• password: Dùng để xác thực Đăng nhập/Đăng ký."
+    note for User "BỔ SUNG V2 (Hoàng):<br>• email & role: Phân quyền hệ thống.<br>• active: Trạng thái khóa/mở tài khoản.<br>• canAfford(): Trực tiếp check ví trước khi Bid."
 
     class Product {
         -int id
@@ -206,13 +211,19 @@ classDiagram
         -int sellerId
         -LocalDateTime endTime
         -String status
+        -String description
+        -String imagePath
+        +isBiddingActive() boolean
+        +isNotSeller(bidderId: int) boolean
         +isValidBid(newBid: double) boolean
         +updateBid(newBid: double, userId: int) void
+        +placeBid(newBid: double, userId: int) void
+        +checkAndSetStatus() void
     }
-    note for Product "BỔ SUNG V2:<br>• sellerId: Chặn chủ đồ tự buff giá.<br>• endTime: Thời gian chốt phiên đếm ngược.<br>• status: Trạng thái (Đang đấu, Đã bán...)."
+    note for Product "BỔ SUNG V2 (Huy):<br>• sellerId: Chặn chủ đồ tự buff giá.<br>• endTime & status: Mốc thời gian & trạng thái phiên.<br>• description & imagePath: Phục vụ UI JavaFX.<br>• Các hàm Validate: Model tự bảo vệ dữ liệu."
 
     %% ==========================================
-    %% 2. TẦNG SYSTEM CORE (Mới hoàn toàn)
+    %% 2. TẦNG SYSTEM CORE (Hạ tầng của Tech Lead)
     %% ==========================================
     class SessionManager {
         <<Singleton>>
@@ -223,7 +234,7 @@ classDiagram
         +logout() void
         +getCurrentUser() User
     }
-    note for SessionManager "LỚP MỚI - QUẢN LÝ ĐĂNG NHẬP:<br>• Lưu trữ thông tin User đang online toàn hệ thống."
+    note for SessionManager "LỚP MỚI - QUẢN LÝ PHIÊN:<br>• Lưu trữ thông tin User đang online toàn hệ thống."
 
     class SceneManager {
         <<Singleton>>
