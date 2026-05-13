@@ -181,9 +181,6 @@ classDiagram
 ## 🗺️ 7. Sơ đồ Kiến trúc mở rộng (UML - V2) - Tích hợp UI và Realtime
 
 ```mermaid
-### 🖥️ 7. Kiến trúc Hệ thống Tổng thể (UML Phase 2)
-
-```mermaid
 classDiagram
     %% ==========================================
     %% 1. TẦNG DATA MODEL (Cập nhật thực tế)
