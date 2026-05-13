@@ -181,9 +181,12 @@ classDiagram
 ## 🗺️ 7. Sơ đồ Kiến trúc mở rộng (UML - V2) - Tích hợp UI và Realtime
 
 ```mermaid
+### 🖥️ 7. Kiến trúc Hệ thống Tổng thể (UML Phase 2)
+
+```mermaid
 classDiagram
     %% ==========================================
-    %% 1. TẦNG DATA MODEL
+    %% 1. TẦNG DATA MODEL (Cập nhật thực tế)
     %% ==========================================
     class User {
         -int id
@@ -200,7 +203,6 @@ classDiagram
         +deductMoney(amount: double) void
         +refundMoney(amount: double) void
     }
-    note for User "BỔ SUNG V2 (Hoàng):<br>• email & role: Phân quyền hệ thống.<br>• active: Trạng thái khóa/mở tài khoản.<br>• canAfford(): Trực tiếp check ví trước khi Bid."
 
     class Product {
         -int id
@@ -220,7 +222,6 @@ classDiagram
         +placeBid(newBid: double, userId: int) void
         +checkAndSetStatus() void
     }
-    note for Product "BỔ SUNG V2 (Huy):<br>• sellerId: Chặn chủ đồ tự buff giá.<br>• endTime & status: Mốc thời gian & trạng thái phiên.<br>• description & imagePath: Phục vụ UI JavaFX.<br>• Các hàm Validate: Model tự bảo vệ dữ liệu."
 
     %% ==========================================
     %% 2. TẦNG SYSTEM CORE (Hạ tầng của Tech Lead)
@@ -234,7 +235,6 @@ classDiagram
         +logout() void
         +getCurrentUser() User
     }
-    note for SessionManager "LỚP MỚI - QUẢN LÝ PHIÊN:<br>• Lưu trữ thông tin User đang online toàn hệ thống."
 
     class SceneManager {
         <<Singleton>>
@@ -243,9 +243,8 @@ classDiagram
         +getInstance() SceneManager
         +setMainStage(stage: Stage) void
         +switchScene(fxmlFile: String) void
-        +showPopup(message: String) void
+        +showPopup(title: String, message: String) void
     }
-    note for SceneManager "LỚP MỚI - ĐIỀU HƯỚNG GIAO DIỆN:<br>• Chuyển đổi các màn hình FXML không cần tạo Window mới."
 
     %% ==========================================
     %% 3. TẦNG LOGIC NGHIỆP VỤ (Nâng cấp)
@@ -253,21 +252,46 @@ classDiagram
     class LiveAuctionController {
         <<Multi-Thread>>
         -Product product
-        -Thread timerThread
+        -ScheduledExecutorService scheduler
         +startAuctionTimer() void
-        +processBid(amount: double) boolean
-        -broadcastUpdate() void
+        +processBid(amount: double) void
+        -updateRealtimeUI() void
         +endAuction() void
     }
-    note for LiveAuctionController "NÂNG CẤP V2 (ĐA LUỒNG):<br>• Dùng Thread để đếm ngược endTime không đơ UI.<br>• Rút User từ SessionManager để xử lý logic trừ tiền."
 
     %% ==========================================
     %% MỐI QUAN HỆ & LIÊN KẾT
     %% ==========================================
-    SessionManager "1" --> "1" User : Lưu trạng thái Online
+    SessionManager "1" --> "1" User : Giữ trạng thái Online
     LiveAuctionController "*" --> "1" Product : Quản lý 1 phiên đấu
     LiveAuctionController ..> SessionManager : Lấy User để trừ tiền
+    LiveAuctionController ..> SceneManager : Bắn lỗi ra Popup UI
 ```
+### 📖 Từ điển Giải nghĩa Kiến trúc V2 (UML Glossary)
+
+**1. Tầng Dữ liệu (Data Model) - Phân hệ tĩnh**
+
+* **`User`**: Đại diện cho người dùng hệ thống. 
+    * *Cập nhật V2:* Tích hợp thêm tính năng Phân quyền (`role`, `email`) và Khóa tài khoản (`active`). Tự quản lý ví tiền thông qua hàm `canAfford()` (check số dư) và `deductMoney()` (trừ tiền).
+* **`Product`**: Đại diện cho vật phẩm trên sàn đấu giá.
+    * *Cập nhật V2:* Nâng cấp thành Model thông minh. Tự chứa mốc thời gian đóng phiên (`endTime`) và logic chặn chủ đồ tự đấu giá (`sellerId`). Bao gồm `description` và `imagePath` để đổ dữ liệu ra JavaFX. Phương thức `updateBid()` được gắn `synchronized` để chống lỗi Race Condition.
+
+**2. Tầng Lõi Hệ thống (System Core) - Hạ tầng điều phối**
+
+* **`SessionManager`**: Quản lý phiên làm việc. Khởi tạo một lần duy nhất (`Singleton`). Lưu trữ thông tin của người dùng vừa đăng nhập thành công. Các Module (Chợ, Đấu giá) sẽ gọi `getCurrentUser()` để biết chính xác ai đang thao tác.
+* **`SceneManager`**: Gác cổng giao diện. Nắm giữ Cửa sổ chính (`primaryStage`). Thay vì mở nhiều cửa sổ lộn xộn, mọi lệnh chuyển trang ĐỀU PHẢI gọi qua hàm `switchScene()`. Hàm `showPopup()` dùng để quăng thông báo lỗi (ví dụ: Không đủ tiền, Giá không hợp lệ) ra màn hình cho người dùng.
+
+**3. Tầng Logic Đa luồng (Business Logic) - Trái tim hệ thống**
+
+* **`LiveAuctionController`**: Trình điều khiển phòng đấu giá trực tiếp (Cốt lõi Đa luồng).
+    * **`scheduler`**: Dùng `ScheduledExecutorService` (thay cho Thread cơ bản) để tạo bộ đếm ngược thời gian chuẩn xác từng giây, liên tục gọi hàm `checkAndSetStatus()` của Product để cập nhật trạng thái.
+    * **`processBid(amount)`**: Luồng xử lý đặt giá chuyên sâu. Khi UI gọi hàm này, Controller sẽ: 
+        1. Gọi `SessionManager` lấy User hiện tại.
+        2. Check `User.canAfford(amount)` xem ví đủ tiền không.
+        3. Try-Catch gọi `Product.placeBid()`. Nếu Product ném ra `Exception` (lỗi giá thấp, tự
+
+---
+
 ## 🖥️ 8. Kiến trúc Giao diện (Tầng View - UI)
 *Mô tả cách các màn hình giao diện JavaFX kết nối với hệ thống Core ở trên. Đảm bảo tuân thủ nguyên tắc: UI không tự xử lý logic.
 
