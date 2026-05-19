@@ -2,11 +2,11 @@
 
 ## 👥 Thành viên nhóm & Theo dõi tiến độ
 
-| MSSV | Họ và tên | Vai trò chuyên môn | % Commit | Trạng thái |
-| :--- | :--- | :--- | :---: | :--- |
-| 25020038 | **Lê Hữu Bằng** | **Leader / Quản lý Trạng thái & Timer** |  |  |
-| 25020182 | **Nguyễn Nhất Huy** | **Coder / Quản lý Sản phẩm** |  |  |
-| 25020159 | **Dương Bá Việt Hoàng** | **Coder / Quản lý Người dùng** |  |  |
+| MSSV | Họ và tên | Phụ Trách | % Commit |
+| :--- | :--- | :--- | :---: |
+| 25020038 | **Lê Hữu Bằng** | **Leader / Hệ thống & logic đa luồng** | **33,3%** |
+| 25020182 | **Nguyễn Nhất Huy** | **Coder / Sản phẩm & Trang chủ** | **33,3%** |
+| 25020159 | **Dương Bá Việt Hoàng** | **Coder / Người dùng & Đăng nhập** | **33,3%** |
 
 > **Cách tính % Commit:** Tổng điểm % từ các Task đã được Leader Merge vào nhánh `main`. Con số này là căn cứ duy nhất để chia điểm project.
 ---
@@ -22,14 +22,17 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 * **Điểm số:** Chấm điểm theo nhóm. Nhóm tự phân chia điểm theo mức độ đóng góp, tổng điểm cá nhân bằng điểm chung của nhóm.
 ---
 
-## 📊 3. Tổng quan tiến độ (Cập nhật: 16/04/2026)
+### 📊 3. Tổng quan tiến độ (Cập nhật: 07/05/2026)
 
-**Core Engine:** 0/6 Module hoàn thành
-![Progress](https://img.shields.io/badge/Progress-0%2F6-red?style=for-the-badge)
+*Tiến độ được đánh giá theo % khối lượng công việc thực tế đã hoàn thành và được Leader merge thành công vào nhánh chính, do các phân hệ được phát triển và lắp ghép song song.*
 
-**Advanced Implementation:** 0/7 Module hoàn thành
-![Progress](https://img.shields.io/badge/Progress-0%2F7-orange?style=for-the-badge)
+**Phase 1: Core Engine (Cốt lõi Logic & Dữ liệu)**
+`[▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░] 80%`
+> Trạng thái: Đã hoàn thiện luồng đấu giá cơ bản, đang test độ ổn định.
 
+**Phase 2: Advanced Implementation (Giao diện UI & Đa luồng)**
+`[▓▓▓▓░░░░░░░░░░░░░░░░] 20%`
+> Trạng thái: Đã chốt kiến trúc Routing và Layout, anh em đang kéo giao diện FXML.
 ---
 
 ## ⚖️ 4. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
@@ -180,19 +183,23 @@ classDiagram
 ```mermaid
 classDiagram
     %% ==========================================
-    %% 1. TẦNG DATA MODEL (Chỉ ghi chú phần mới)
+    %% 1. TẦNG DATA MODEL (Cập nhật thực tế)
     %% ==========================================
     class User {
         -int id
         -String username
         -String password
+        -String email
+        -Role role
         -double balance
+        -boolean active
         +getId() int
         +getBalance() double
+        +isActive() boolean
+        +canAfford(amount: double) boolean
         +deductMoney(amount: double) void
         +refundMoney(amount: double) void
     }
-    note for User "BỔ SUNG V2:<br>• password: Dùng để xác thực Đăng nhập/Đăng ký."
 
     class Product {
         -int id
@@ -203,13 +210,18 @@ classDiagram
         -int sellerId
         -LocalDateTime endTime
         -String status
+        -String description
+        -String imagePath
+        +isBiddingActive() boolean
+        +isNotSeller(bidderId: int) boolean
         +isValidBid(newBid: double) boolean
         +updateBid(newBid: double, userId: int) void
+        +placeBid(newBid: double, userId: int) void
+        +checkAndSetStatus() void
     }
-    note for Product "BỔ SUNG V2:<br>• sellerId: Chặn chủ đồ tự buff giá.<br>• endTime: Thời gian chốt phiên đếm ngược.<br>• status: Trạng thái (Đang đấu, Đã bán...)."
 
     %% ==========================================
-    %% 2. TẦNG SYSTEM CORE (Mới hoàn toàn)
+    %% 2. TẦNG SYSTEM CORE (Hạ tầng của Tech Lead)
     %% ==========================================
     class SessionManager {
         <<Singleton>>
@@ -220,7 +232,6 @@ classDiagram
         +logout() void
         +getCurrentUser() User
     }
-    note for SessionManager "LỚP MỚI - QUẢN LÝ ĐĂNG NHẬP:<br>• Lưu trữ thông tin User đang online toàn hệ thống."
 
     class SceneManager {
         <<Singleton>>
@@ -229,9 +240,8 @@ classDiagram
         +getInstance() SceneManager
         +setMainStage(stage: Stage) void
         +switchScene(fxmlFile: String) void
-        +showPopup(message: String) void
+        +showPopup(title: String, message: String) void
     }
-    note for SceneManager "LỚP MỚI - ĐIỀU HƯỚNG GIAO DIỆN:<br>• Chuyển đổi các màn hình FXML không cần tạo Window mới."
 
     %% ==========================================
     %% 3. TẦNG LOGIC NGHIỆP VỤ (Nâng cấp)
@@ -239,21 +249,46 @@ classDiagram
     class LiveAuctionController {
         <<Multi-Thread>>
         -Product product
-        -Thread timerThread
+        -ScheduledExecutorService scheduler
         +startAuctionTimer() void
-        +processBid(amount: double) boolean
-        -broadcastUpdate() void
+        +processBid(amount: double) void
+        -updateRealtimeUI() void
         +endAuction() void
     }
-    note for LiveAuctionController "NÂNG CẤP V2 (ĐA LUỒNG):<br>• Dùng Thread để đếm ngược endTime không đơ UI.<br>• Rút User từ SessionManager để xử lý logic trừ tiền."
 
     %% ==========================================
     %% MỐI QUAN HỆ & LIÊN KẾT
     %% ==========================================
-    SessionManager "1" --> "1" User : Lưu trạng thái Online
+    SessionManager "1" --> "1" User : Giữ trạng thái Online
     LiveAuctionController "*" --> "1" Product : Quản lý 1 phiên đấu
     LiveAuctionController ..> SessionManager : Lấy User để trừ tiền
+    LiveAuctionController ..> SceneManager : Bắn lỗi ra Popup UI
 ```
+### 📖 Từ điển Giải nghĩa Kiến trúc V2 (UML Glossary)
+
+**1. Tầng Dữ liệu (Data Model) - Phân hệ tĩnh**
+
+* **`User`**: Đại diện cho người dùng hệ thống. 
+    * *Cập nhật V2:* Tích hợp thêm tính năng Phân quyền (`role`, `email`) và Khóa tài khoản (`active`). Tự quản lý ví tiền thông qua hàm `canAfford()` (check số dư) và `deductMoney()` (trừ tiền).
+* **`Product`**: Đại diện cho vật phẩm trên sàn đấu giá.
+    * *Cập nhật V2:* Nâng cấp thành Model thông minh. Tự chứa mốc thời gian đóng phiên (`endTime`) và logic chặn chủ đồ tự đấu giá (`sellerId`). Bao gồm `description` và `imagePath` để đổ dữ liệu ra JavaFX. Phương thức `updateBid()` được gắn `synchronized` để chống lỗi Race Condition.
+
+**2. Tầng Lõi Hệ thống (System Core) - Hạ tầng điều phối**
+
+* **`SessionManager`**: Quản lý phiên làm việc. Khởi tạo một lần duy nhất (`Singleton`). Lưu trữ thông tin của người dùng vừa đăng nhập thành công. Các Module (Chợ, Đấu giá) sẽ gọi `getCurrentUser()` để biết chính xác ai đang thao tác.
+* **`SceneManager`**: Gác cổng giao diện. Nắm giữ Cửa sổ chính (`primaryStage`). Thay vì mở nhiều cửa sổ lộn xộn, mọi lệnh chuyển trang ĐỀU PHẢI gọi qua hàm `switchScene()`. Hàm `showPopup()` dùng để quăng thông báo lỗi (ví dụ: Không đủ tiền, Giá không hợp lệ) ra màn hình cho người dùng.
+
+**3. Tầng Logic Đa luồng (Business Logic) - Trái tim hệ thống**
+
+* **`LiveAuctionController`**: Trình điều khiển phòng đấu giá trực tiếp (Cốt lõi Đa luồng).
+    * **`scheduler`**: Dùng `ScheduledExecutorService` (thay cho Thread cơ bản) để tạo bộ đếm ngược thời gian chuẩn xác từng giây, liên tục gọi hàm `checkAndSetStatus()` của Product để cập nhật trạng thái.
+    * **`processBid(amount)`**: Luồng xử lý đặt giá chuyên sâu. Khi UI gọi hàm này, Controller sẽ: 
+        1. Gọi `SessionManager` lấy User hiện tại.
+        2. Check `User.canAfford(amount)` xem ví đủ tiền không.
+        3. Try-Catch gọi `Product.placeBid()`. Nếu Product ném ra `Exception` (lỗi giá thấp, tự
+
+---
+
 ## 🖥️ 8. Kiến trúc Giao diện (Tầng View - UI)
 *Mô tả cách các màn hình giao diện JavaFX kết nối với hệ thống Core ở trên. Đảm bảo tuân thủ nguyên tắc: UI không tự xử lý logic.
 
