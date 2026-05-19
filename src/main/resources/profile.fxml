@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0" prefWidth="450.0" prefHeight="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nhom13.bidding.controller.ProfileUIController">
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+    </padding>
+    <children>
+        <Label text="THÔNG TIN CÁ NHÂN" textFill="#002d62">
+            <font>
+                <Font name="System Bold" size="22.0" />
+            </font>
+            <VBox.margin>
+                <Insets bottom="10.0" />
+            </VBox.margin>
+        </Label>
+
+        <GridPane hgap="10.0" vgap="12.0" style="-fx-background-color: #f8fafc; -fx-padding: 15; -fx-border-color: #e2e8f0; -fx-border-radius: 5; -fx-background-radius: 5;">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="120.0" />
+                <ColumnConstraints prefWidth="250.0" />
+            </columnConstraints>
+            <children>
+                <Label text="Tài khoản:" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <font> <Font name="System Bold" size="13.0" /> </font>
+                </Label>
+                <Label fx:id="lblUsername" text="---" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <font> <Font name="System Bold" size="13.0" /> </font>
+                </Label>
+                <Label fx:id="lblEmail" text="---" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="Số dư hiện tại:" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <font> <Font name="System Bold" size="13.0" /> </font>
+                </Label>
+                <Label fx:id="lblBalance" text="0 VNĐ" textFill="#22c55e" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <font> <Font name="System Bold" size="14.0" /> </font>
+                </Label>
+            </children>
+        </GridPane>
+
+        <VBox spacing="8.0" style="-fx-border-color: #e2e8f0; -fx-padding: 15; -fx-border-radius: 5;">
+            <children>
+                <Label text="Nạp tiền vào tài khoản">
+                    <font> <Font name="System Italic" size="13.0" /> </font>
+                </Label>
+                <HBox spacing="10.0" alignment="CENTER">
+                    <children>
+                        <TextField fx:id="txtDepositAmount" promptText="Nhập số tiền cần nạp" HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#handleDepositClick" text="Nạp Tiền" style="-fx-background-color: #22c55e;" textFill="white">
+                            <font> <Font name="System Bold" size="12.0" /> </font>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleBackToHome" text="Quay lại Chợ" style="-fx-background-color: #64748b;" textFill="white">
+            <font> <Font name="System Bold" size="13.0" /> </font>
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Button>
+    </children>
+</VBox>

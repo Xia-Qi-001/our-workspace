@@ -1,66 +1,57 @@
 package com.nhom13.bidding.controller;
 
+import com.nhom13.bidding.core.LiveAuctionController;
+import com.nhom13.bidding.core.ProductManager;
+import com.nhom13.bidding.core.SceneManager;
 import com.nhom13.bidding.model.Product;
-import com.nhom13.bidding.model.User;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 public class AuctionController {
-    private int remainingTime;
-    private Product product;
 
-    public AuctionController(Product product, int remainingTime) {
-        this.product = product;
-        this.remainingTime = remainingTime;
-    }
+    @FXML private Label lblProductName;
+    @FXML private Label lblCurrentPrice;
+    private Product currentProduct;
+    private LiveAuctionController auctionCore;
 
-    public boolean isTimeValid() {
-        return this.remainingTime > 0;
-    }
+    @FXML
+    private TextField txtBidAmount;
 
-    public void processBid(User user, double amount) {
-        System.out.println("\n[Lệnh Bid] " + user.getUsername() + " trả giá: " + amount);
+    @FXML
+    public void initialize() {
+        // 1. Đọc ID trung chuyển từ kho của Huy
+        int selectedId = ProductManager.getInstance().getSelectedProductId();
+        currentProduct = ProductManager.getInstance().getProductById(selectedId);
 
-        // Lưới lọc 1: Thời gian
-        if (!isTimeValid()) {
-            System.out.println("-> Thất bại: Đã hết thời gian đấu giá!");
-            return;
-        }
+        if (currentProduct != null) {
+            // 2. Đổ dữ liệu lên giao diện phòng đấu giá
+            lblProductName.setText(currentProduct.getName());
+            lblCurrentPrice.setText(String.format("%,.0f VNĐ", currentProduct.getCurrentPrice()));
 
-        // Lưới lọc 2: Luật bước giá
-        if (!product.isValidBid(amount)) {
-            System.out.println("-> Thất bại: Mức giá chưa hợp lệ (Phải >= " + (product.getCurrentPrice() + product.getStepPrice()) + ")");
-            return;
-        }
-
-        // Lưới lọc 3: Tiền trong ví
-        if (!user.canAfford(amount)) {
-            System.out.println("-> Thất bại: Số dư trong ví không đủ!");
-            return;
-        }
-
-        // Vượt qua 3 lưới lọc -> Trừ tiền và Cập nhật Top 1
-        user.deductMoney(amount);
-        product.updateBid(amount, user.getId());
-
-        System.out.println("-> Thành công: " + user.getUsername() + " tạm dẫn đầu!");
-    }
-
-    public void endAuction() {
-        System.out.println("\n=== PHIÊN ĐẤU GIÁ KẾT THÚC ===");
-        if (product.getCurrentWinnerId() != -1) {
-            System.out.println("Sản phẩm: " + product.getName() + " đã được bán với giá " + product.getCurrentPrice());
-        } else {
-            System.out.println("Sản phẩm không có ai mua.");
-        }
-    }
-    // Thêm hàm này để mỗi giây trôi qua thì trừ thời gian đi 1
-    public void tickTime() {
-        if (this.remainingTime > 0) {
-            this.remainingTime--;
+            // 3. Khởi chạy bộ đếm ngược đa luồng của Tech Lead cho riêng món đồ này
+            auctionCore = new LiveAuctionController(currentProduct);
+            auctionCore.startAuctionTimer();
         }
     }
 
-    // Thêm hàm này để giao diện lấy số giây hiển thị lên màn hình
-    public int getRemainingTime() {
-        return this.remainingTime;
+    @FXML
+    public void handlePlaceBid() {
+        try {
+            double amount = Double.parseDouble(txtBidAmount.getText().trim());
+            // Gọi tầng lõi xử lý tiền tệ và đồng bộ luồng
+            auctionCore.processBid(amount);
+
+            // Cập nhật lại giá mới lên màn hình sau khi Bid thành công
+            lblCurrentPrice.setText(String.format("%,.0f VNĐ", currentProduct.getCurrentPrice()));
+            txtBidAmount.clear();
+        } catch (NumberFormatException e) {
+            SceneManager.getInstance().showPopup("Lỗi", "Số tiền không hợp lệ!");
+        }
+    }
+
+    @FXML
+    public void handleBackToHome() {
+        SceneManager.getInstance().switchScene("home.fxml");
     }
 }
