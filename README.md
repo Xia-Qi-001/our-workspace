@@ -491,8 +491,41 @@ classDiagram
         +initialize() void
         +loadPendingDeliveries(buyerId: int) void
         +handleConfirmReceived(order: Product) void
+    }
 
-Tất cả các hành động chuyển từ màn hình này sang màn hình khác ĐỀU PHẢI gọi qua `SceneManager` (Ví dụ: `SceneManager.getInstance().switchScene("Home.fxml")`). Cấm anh em nào tự ý dùng lệnh `new Stage().show()`.
+    class AuctionUIController {
+        -AuctionController logicController
+        +updateRealtimeUI() void
+        +handleBidClick() void
+    }
+    
+    class SellerUIController {
+        +handleCreateAuction() void
+    }
+
+    class LoginUIController {
+        +handleLoginClick() void
+    }
+
+    %% ==========================================
+    %% MỐI QUAN HỆ & LIÊN KẾT (Dependencies)
+    %% ==========================================
+    HomeUIController ..> ProductDAO : Tìm kiếm & Bật Popup
+    HomeUIController ..> UserDAO : Chuyển tiền (Chuông)
+    ProfileController ..> ProductDAO : Lấy đơn chờ giao
+    ProfileController ..> UserDAO : Cộng tiền Seller
+    
+    LoginUIController ..> SceneManager : Đổi màn hình
+    HomeUIController ..> SceneManager : Mở form đấu giá
+    
+    AuctionUIController "1" --> "1" AuctionController : Đẩy lệnh Bid xuống
+    
+    AuctionController ..> ProductDAO : Kiểm tra giá DB chống Stale Data
+    AuctionController ..> UserDAO : Trừ tiền trực tiếp
+    AuctionController --> Product : Thao tác đối tượng
+    
+    SessionManager "1" --> "1" User : Lưu tài khoản đang Login
+
 ```
 ### 📖 A. Từ điển Giải nghĩa Giao diện (UI & Core Controllers) - V3
 
