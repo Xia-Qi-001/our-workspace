@@ -22,17 +22,17 @@ Hệ thống đấu giá trực tuyến là nền tảng phần mềm cho phép 
 * **Điểm số:** Chấm điểm theo nhóm. Nhóm tự phân chia điểm theo mức độ đóng góp, tổng điểm cá nhân bằng điểm chung của nhóm.
 ---
 
-### 📊 3. Tổng quan tiến độ (Cập nhật: 07/05/2026)
+### 📊 3. Tổng quan tiến độ (Cập nhật: 28/05/2026)
 
 *Tiến độ được đánh giá theo % khối lượng công việc thực tế đã hoàn thành và được Leader merge thành công vào nhánh chính, do các phân hệ được phát triển và lắp ghép song song.*
 
-**Phase 1: Core Engine (Cốt lõi Logic & Dữ liệu)**
-`[▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░] 80%`
-> Trạng thái: Đã hoàn thiện luồng đấu giá cơ bản, đang test độ ổn định.
+**Phase 1: Core Engine (Cốt lõi Logic & Dữ liệu) - BẢN V3**
+`[▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%`
+> Trạng thái: Đã hoàn thiện 100% luồng nghiệp vụ kinh doanh. Tích hợp thành công Ví trung gian, thanh toán và đồng bộ RAM - Database. Sẵn sàng nghiệm thu Phase 1.
 
 **Phase 2: Advanced Implementation (Giao diện UI & Đa luồng)**
-`[▓▓▓▓░░░░░░░░░░░░░░░░] 20%`
-> Trạng thái: Đã chốt kiến trúc Routing và Layout, anh em đang kéo giao diện FXML.
+`[▓▓▓▓▓░░░░░░░░░░░░░░░] 25%`
+> Trạng thái: Đã chốt kiến trúc MVC, Design Pattern (Singleton) và phân tách tầng DAO. Đang chuẩn bị đập Lock/Synchronized vào Core để xử lý Concurrency (Đa luồng).
 ---
 
 ## ⚖️ 4. Luật Mở Khóa & Phân Phối Điểm (% Cố định)
@@ -381,4 +381,186 @@ classDiagram
 
 **👉 Nguyên tắc cốt lõi toàn Phase 2:**
 
+---
+
+## 🗺️ 9. Kiến trúc N-Tầng liên kết lỏng & Tương hỗ (UML - V3) - Hoàn thiện Phase 1
+*Sơ đồ thể hiện toàn bộ vòng đời ứng dụng, từ giao diện người dùng (UI) đi qua lõi xử lý (Logic/Core) và tương tác với cơ sở dữ liệu (DAO).*
+
+```mermaid
+classDiagram
+    %% ==========================================
+    %% 1. TẦNG DATA MODEL (Thực thể dữ liệu)
+    %% ==========================================
+    class User {
+        -int id
+        -String username
+        -String password
+        -double balance
+        -int role
+        +getId() int
+        +getBalance() double
+        +setBalance(amount: double) void
+    }
+
+    class Product {
+        -int id
+        -String name
+        -double currentPrice
+        -double stepPrice
+        -int currentWinnerId
+        -int sellerId
+        -String status
+        -LocalDateTime endTime
+        -String imagePath
+        +getCurrentPrice() double
+        +setCurrentPrice(price: double) void
+        +setCurrentWinnerId(id: int) void
+    }
+
+    %% ==========================================
+    %% 2. TẦNG DATA ACCESS OBJECT (DAO)
+    %% ==========================================
+    class UserDAO {
+        +updateBalance(userId: int, amount: double) boolean
+        +addBalance(userId: int, amount: double) boolean
+        +getUserBalance(userId: int) double
+    }
+
+    class ProductDAO {
+        +getAllActiveProducts() List~Product~
+        +searchActiveProducts(keyword: String) List~Product~
+        +getPendingDeliveries(buyerId: int) List~Product~
+        +getLatestPrice(productId: int) double
+        +updateBidPrice(productId: int, price: double, userId: int) boolean
+        +updateProductStatus(productId: int, status: String) boolean
+        +addProduct(product: Product) boolean
+    }
+
+    %% ==========================================
+    %% 3. TẦNG SYSTEM CORE (Hạ tầng hệ thống)
+    %% ==========================================
+    class SessionManager {
+        <<Singleton>>
+        -User currentUser
+        -static SessionManager instance
+        +getInstance() SessionManager
+        +login(user: String, pass: String) boolean
+        +logout() void
+        +getCurrentUser() User
+    }
+
+    class SceneManager {
+        <<Singleton>>
+        -static SceneManager instance
+        +getInstance() SceneManager
+        +switchScene(fxmlFile: String) void
+        +showPopup(title: String, message: String) void
+    }
+
+    %% ==========================================
+    %% 4. TẦNG BUSINESS LOGIC (Nghiệp vụ Đấu giá)
+    %% ==========================================
+    class AuctionController {
+        -int remainingTime
+        -Product product
+        -User currentUser
+        -ProductDAO productDAO
+        -UserDAO userDAO
+        +isTimeValid() boolean
+        +processBid(user: User, amount: double) String
+        +endAuction() void
+        +tickDown() void
+        +getRemainingTime() int
+    }
+    note for AuctionController "Hàm endAuction():\nKhóa trạng thái -> Trừ tiền DB -> Đồng bộ RAM"
+
+    %% ==========================================
+    %% 5. TẦNG GIAO DIỆN (UI Controllers)
+    %% ==========================================
+    class HomeUIController {
+        -ProductDAO productDAO
+        -UserDAO userDAO
+        +initialize() void
+        +handleSearch() void
+        +handleShowNotifications() void
+    }
+    
+    class ProfileController {
+        -ProductDAO productDAO
+        -UserDAO userDAO
+        +initialize() void
+        +loadPendingDeliveries(buyerId: int) void
+        +handleConfirmReceived(order: Product) void
+
 Tất cả các hành động chuyển từ màn hình này sang màn hình khác ĐỀU PHẢI gọi qua `SceneManager` (Ví dụ: `SceneManager.getInstance().switchScene("Home.fxml")`). Cấm anh em nào tự ý dùng lệnh `new Stage().show()`.
+```
+### 📖 A. Từ điển Giải nghĩa Giao diện (UI & Core Controllers) - V3
+
+**1. Phân hệ Tài khoản & Lịch sử (Module_Auth_HOANG)**
+
+* **`LoginUIController` / `RegisterUIController`**: Nắm cổng bảo mật. Giao tiếp với `SessionManager` để thiết lập phiên làm việc (Session) duy nhất. Toàn quyền điều hướng sau khi xác thực thành công.
+* **`ProfileController` (Nâng cấp V3)**: Quản lý ví trung gian. Nhiệm vụ: Đọc luồng dữ liệu đơn hàng trạng thái "Chờ giao hàng". Khởi chạy hàm `handleConfirmReceived()` để xác nhận nhả tiền (release fund) vào ví người bán, khép kín vòng đời 1 giao dịch.
+
+**2. Phân hệ Thị trường & Tìm kiếm (Module_Market_HUY)**
+
+* **`HomeUIController` (Nâng cấp V3)**: Trái tim của giao diện người dùng. Nhiệm vụ: 
+    * Load danh sách sản phẩm hiển thị lưới (`GridPane`).
+    * **[New]** Cung cấp bộ lọc tìm kiếm Realtime qua `handleSearch()`.
+    * **[New]** Quản lý Notification Popup (Chuông báo): Trực tiếp chọc xuống `ProductDAO` cào dữ liệu đơn hàng chờ nhận lên cửa sổ nổi (Modal), tích hợp tính năng khóa nút (Anti-Spam Click) chống giao dịch kép.
+* **`SellerUIController`**: Nắm form Đăng bán. Kiểm duyệt tính hợp lệ của dữ liệu (Validation) trước khi đóng gói thành đối tượng `Product` ném xuống tầng DAO.
+
+**3. Phân hệ Đấu giá Cốt lõi (Module_Auction_BANG)**
+
+* **`AuctionUIController` (Tầng View)**: Nắm Phòng đấu giá trực tiếp. Nhiệm vụ duy nhất là "bù nhìn giao diện": Nhận sự kiện click của user và cập nhật text (Giờ/Giá). **Tuyệt đối không nhúng tay vào tính toán hay gọi Database.**
+* **`AuctionController` (Tầng Logic / Bộ não V3)**: Kẻ cầm trịch vòng đời sản phẩm. Nhiệm vụ:
+    * Chống Stale Data: Gọi `getLatestPrice` từ DB trước khi chốt giá.
+    * Quản lý Ví (Escrow): Gọi `endAuction()` để chuyển trạng thái đồ sang "Chờ giao hàng" và trừ tiền ví người mua.
+    * Đồng bộ RAM - DB: Đảm bảo giao diện nhảy số tiền khớp với cơ sở dữ liệu sau mỗi lượt Bid.
+
+**👉 Nguyên tắc cốt lõi toàn Phase 1 - V3:**
+
+Tất cả các hàm tương tác CSDL phải được gọi qua tầng `DAO`. UI chỉ làm nhiệm vụ giao tiếp người dùng, ủy quyền (Delegate) toàn bộ logic nghiệp vụ (trừ/cộng tiền, check tính hợp lệ) cho Tầng Core (`AuctionController`).
+
+### 🛠️ B. Các kỹ thuật tối ưu cốt lõi (Technical Highlights - V3)
+
+Hệ thống V3 không chỉ đáp ứng luồng nghiệp vụ cơ bản mà còn áp dụng các tiêu chuẩn thiết kế phần mềm để đảm bảo tính ổn định và toàn vẹn dữ liệu:
+
+* **1. Áp dụng Singleton Pattern (Quản lý trạng thái tập trung):**
+  * **Triển khai:** Khởi tạo duy nhất một instance cho `SessionManager` và `SceneManager`.
+  * **Mục đích:** Quản lý tập trung trạng thái phiên đăng nhập (Session) và điều hướng cửa sổ (Stage) toàn cục. Tối ưu hóa tài nguyên RAM, ngăn chặn lỗi memory leak (rò rỉ bộ nhớ) do khởi tạo đối tượng dư thừa.
+
+* **2. Cơ chế chống Stale Data (Dữ liệu lỗi thời):**
+  * **Triển khai:** Trong phương thức `processBid`, hệ thống buộc phải gọi `getLatestPrice` từ CSDL ngay tại thời điểm thực thi, bỏ qua giá trị đang lưu tạm trên RAM.
+  * **Mục đích:** Đảm bảo tính nhất quán của dữ liệu. Ngăn chặn tình trạng 2 người dùng nhìn thấy cùng một mức giá cũ và thực hiện ghi đè (Overwrite) sai bước giá của nhau.
+
+* **3. Kiến trúc Ví trung gian (Escrow Pattern):**
+  * **Triển khai:** Tách biệt luồng dòng tiền thành 2 pha độc lập: Khóa trừ tiền người mua (khi phiên đấu giá kết thúc) và Kích hoạt giải ngân cho người bán (thông qua hàm `handleConfirmReceived`).
+  * **Mục đích:** Đảm bảo an toàn tài chính và tính toàn vẹn của giao dịch (ACID). Người bán chỉ nhận được tiền khi trạng thái vòng đời sản phẩm chính thức chuyển sang "Đã hoàn thành".
+
+* **4. Cơ chế khóa sự kiện UI (Anti-Double Click / UI Locking):**
+  * **Triển khai:** Thiết lập `btnReceive.setDisable(true)` ngay khi Thread bắt được sự kiện click đầu tiên từ người dùng.
+  * **Mục đích:** Chặn đứng lỗi giao dịch kép (Duplicate Transactions) sinh ra do người dùng spam click (Race Condition ở tầng giao diện) trước khi CSDL kịp phản hồi.
+
+* **5. Phân tách trách nhiệm (Separation of Concerns - SoC):**
+  * **Triển khai:** Tuân thủ chặt chẽ mô hình MVC kết hợp DAO. 
+  * **Mục đích:** Tầng Giao diện (UI Controller) hoàn toàn không chứa logic tính toán. Toàn bộ tác vụ kiểm tra tính hợp lệ, tính toán số dư và gọi CSDL được ủy quyền (Delegation) 100% cho tầng Logic (`AuctionController` và `DAO`). Đảm bảo code dễ bảo trì và mở rộng cho Phase 2 (Đa luồng).
+
+ ### 💻 C. Giải pháp Lập trình Đặc thù (Coding Patterns & Mechanics - V3)
+
+Để giải quyết các bài toán biên (Edge Cases) trong quá trình vận hành luồng nghiệp vụ, hệ thống V3 áp dụng các kỹ thuật lập trình đặc thù sau:
+
+* **1. Kiểm soát tính lũy đẳng tầng Giao diện (Idempotency Control via UI Disabling):**
+  * *Vấn đề:* Người dùng click liên tiếp (Spam click) nút "Đã nhận được hàng" tạo ra nhiều luồng yêu cầu trùng lặp gửi xuống máy chủ trước khi CSDL kịp phản hồi.
+  * *Giải pháp:* Ngay dòng đầu tiên của phương thức xử lý sự kiện (Event Handler), hệ thống thực thi lệnh `btnReceive.setDisable(true)` để khóa trạng thái tương tác của nút bấm. Lệnh giải phóng (`setDisable(false)`) chỉ được đặt trong khối `else/catch` nếu quá trình gọi CSDL thất bại. Kỹ thuật này đảm bảo một giao dịch tài chính chỉ được thực thi duy nhất một lần (Idempotent).
+
+* **2. Cơ chế đồng bộ hóa bộ nhớ cục bộ (State Invalidation Check):**
+  * *Vấn đề:* Sau khi thực hiện lệnh trừ tiền thành công dưới CSDL, số dư của người dùng lưu trên RAM (`SessionManager`) sẽ bị cũ (Out of sync).
+  * *Giải pháp:* Trong phương thức `endAuction()`, hệ thống thực hiện kiểm tra chéo điều kiện: `if (loginUser != null && loginUser.getId() == winnerId)`. Thao tác cập nhật lại thuộc tính `setBalance` trên RAM chỉ được chạy nếu người đang đăng nhập trùng khớp với ID người thắng cuộc, đảm bảo tính nhất quán dữ liệu giữa RAM và CSDL mà không cần phải thực hiện lại lệnh `SELECT` toàn bộ bảng.
+
+* **3. Cơ chế Database-Driven Validation (Chống Stale Data):**
+  * *Vấn đề:* Kiểm tra tính hợp lệ của bước giá dựa trên thuộc tính `currentPrice` của đối tượng `Product` sẵn có trên RAM dễ dẫn đến lỗi ghi đè dữ liệu cũ.
+  * *Giải pháp:* Hệ thống tách biệt hoàn toàn luồng lấy giá. Phương thức `processBid` buộc phải gọi hàm `productDAO.getLatestPrice(id)` để thực hiện một câu lệnh `SELECT` độc lập xuống MySQL ngay trước khi so sánh bước giá. Trọng tài quyết định tính hợp lệ của giá đặt luôn là dữ liệu thời gian thực (Realtime) dưới CSDL, không phải dữ liệu tĩnh trên bộ nhớ Java.
+
+* **4. Thiết lập mô hình Máy trạng thái tuần tự (Sequential State Machine):**
+  * *Vấn đề:* Quản lý vòng đời sản phẩm từ lúc đấu giá đến khi giao nhận và hoàn thành mà không làm xung đột dữ liệu.
+  * *Giải pháp:* Trạng thái vật phẩm không chuyển trực tiếp từ `'Đang đấu giá'` sang `'Đã kết thúc'`. Hệ thống chèn vào một trạng thái trung gian là `'Chờ giao hàng'`. Trạng thái này đóng vai trò làm điều kiện lọc (`WHERE status = 'Chờ giao hàng' AND current_winner_id = ?`) cho phương thức `getPendingDeliveries`, giúp hệ thống cô lập được các đơn hàng cần xử lý mà không làm ảnh hưởng đến các sản phẩm đã đóng cấu trúc.
