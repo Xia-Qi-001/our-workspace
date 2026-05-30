@@ -1,5 +1,5 @@
+package com.nhom13.bidding.model;
 
-package com.nhom13.bidding;
 import java.time.LocalDateTime;
 
 /**
@@ -10,6 +10,7 @@ public class Product {
     // --- 1. Thuộc tính (Attributes Nâng cấp) ---
     private int id;
     private String name;
+    private double startPrice;          // BỔ SUNG: Để khớp với cột start_price trong MySQL
     private double currentPrice;
     private double stepPrice;
     private int currentWinnerId;
@@ -21,9 +22,14 @@ public class Product {
     private String description;
     private String imagePath;
 
+    // BỔ SUNG: Constructor rỗng bắt buộc phải có để tầng DAO hoạt động
+    public Product() {
+    }
+
     public Product(int id, String name, double startingPrice, double stepPrice, int sellerId, LocalDateTime endTime) {
         this.id = id;
         this.name = name;
+        this.startPrice = startingPrice;
         this.currentPrice = startingPrice;
         this.stepPrice = stepPrice;
         this.currentWinnerId = -1;
@@ -100,19 +106,37 @@ public class Product {
         }
     }
 
-    // --- Getters & Setters ---
+    // --- Getters & Setters (Đã bổ sung đầy đủ các Setter thiếu) ---
     public int getId() { return id; }
-    public String getName() { return name; }
-    public double getCurrentPrice() { return currentPrice; }
-    public double getStepPrice() { return stepPrice; }
-    public int getCurrentWinnerId() { return currentWinnerId; }
-    public int getSellerId() { return sellerId; }
-    public LocalDateTime getEndTime() { return endTime; }
-    public String getStatus() { return status; }
-    public String getDescription() { return description; }
-    public String getImagePath() { return imagePath; }
+    public void setId(int id) { this.id = id; }
 
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public double getStartPrice() { return startPrice; }
+    public void setStartPrice(double startPrice) { this.startPrice = startPrice; }
+
+    public double getCurrentPrice() { return currentPrice; }
+    public void setCurrentPrice(double currentPrice) { this.currentPrice = currentPrice; }
+
+    public double getStepPrice() { return stepPrice; }
+    public void setStepPrice(double stepPrice) { this.stepPrice = stepPrice; }
+
+    public int getCurrentWinnerId() { return currentWinnerId; }
+    public void setCurrentWinnerId(int currentWinnerId) { this.currentWinnerId = currentWinnerId; }
+
+    public int getSellerId() { return sellerId; }
+    public void setSellerId(int sellerId) { this.sellerId = sellerId; }
+
+    public LocalDateTime getEndTime() { return endTime; }
+    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+
+    public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public String getImagePath() { return imagePath; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }

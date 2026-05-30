@@ -1,125 +1,107 @@
-package com.nhom13.bidding;
+package com.nhom13.bidding.controller;
 
+import com.nhom13.bidding.core.SceneManager;
+import com.nhom13.bidding.core.SessionManager;
+import com.nhom13.bidding.dao.ProductDAO;
+import com.nhom13.bidding.model.Product;
+import com.nhom13.bidding.model.User;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-/**
- * SellerUIController - Controller cho Màn hình Đăng bán sản phẩm.
- *
- * Cho phép người dùng (Seller) tạo sản phẩm đấu giá mới.
- * Sau khi đăng bán thành công, chuyển về trang Home.
- *
- * Nguyên tắc:
- *   - UI chỉ validate cơ bản và gọi Manager
- *   - Mọi chuyển cảnh qua SceneManager.getInstance().switchScene()
- *   - Không dùng new Stage().show()
- */
 public class SellerUIController {
 
-    @FXML
-    private TextField txtProductName;
+    @FXML private TextField txtProductName;
+    @FXML private TextField txtStartPrice;
+    @FXML private TextField txtStepPrice;
+    @FXML private TextField txtImagePath; // Biến text hiển thị đường dẫn ảnh
+    @FXML private DatePicker dpEndDate;
+    @FXML private ComboBox<String> cbHour;
+    @FXML private ComboBox<String> cbMinute;
+
+    private ProductDAO productDAO = new ProductDAO();
 
     @FXML
-    private TextField txtStartPrice;
+    public void initialize() {
+        for (int i = 0; i < 24; i++) cbHour.getItems().add(String.format("%02d", i));
+        for (int i = 0; i < 60; i++) cbMinute.getItems().add(String.format("%02d", i));
+        cbHour.getSelectionModel().select("23");
+        cbMinute.getSelectionModel().select("59");
+    }
 
-    // --- Logic Nghiệp vụ ---
-
-    /**
-     * Xử lý sự kiện khi người dùng nhấn nút "Đăng bán".
-     *
-     * Luồng xử lý:
-     *   1. Validate: Tên không để trống, giá khởi điểm phải là số dương.
-     *   2. Tạo đối tượng Product mới với sellerId từ SessionManager.
-     *   3. Thêm sản phẩm vào ProductManager.
-     *   4. Chuyển về trang Home.
-     */
+    // Hàm gọi cửa sổ chọn file từ máy tính
     @FXML
-    private void handleCreateAuction() {
-        // --- Bước 1: Lấy dữ liệu từ UI ---
-        String productName = txtProductName.getText().trim();
-        String startPriceText = txtStartPrice.getText().trim();
+    public void handleChooseImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Chọn ảnh sản phẩm");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Định dạng ảnh", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
 
-        // --- Bước 2: Validate dữ liệu ---
-        if (productName.isEmpty()) {
-            showAlert(AlertType.WARNING,
-                    "Thiếu thông tin",
-                    "Tên sản phẩm không được để trống!",
-                    "Vui lòng nhập tên sản phẩm.");
+        // Bật cửa sổ duyệt file của Windows/MacOS
+        File selectedFile = fileChooser.showOpenDialog(txtProductName.getScene().getWindow());
+
+        if (selectedFile != null) {
+            // Biến đổi đường dẫn ổ đĩa thông thường thành chuỗi URI để JavaFX hiểu được
+            txtImagePath.setText(selectedFile.toURI().toString());
+        }
+    }
+
+    @FXML
+    public void handlePostProduct() {
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            SceneManager.getInstance().showPopup("Lỗi", "Vui lòng đăng nhập lại!");
             return;
         }
 
-        double startPrice;
         try {
-            startPrice = Double.parseDouble(startPriceText);
+            String name = txtProductName.getText().trim();
+            double startPrice = Double.parseDouble(txtStartPrice.getText().trim());
+            double stepPrice = Double.parseDouble(txtStepPrice.getText().trim());
+            String imagePath = txtImagePath.getText().trim();
+
+            LocalDate date = dpEndDate.getValue();
+            String hour = cbHour.getValue();
+            String minute = cbMinute.getValue();
+
+            if (name.isEmpty() || startPrice <= 0 || stepPrice <= 0 || date == null) {
+                SceneManager.getInstance().showPopup("Lỗi", "Vui lòng điền đầy đủ các trường bắt buộc!");
+                return;
+            }
+
+            LocalTime time = LocalTime.parse(hour + ":" + minute + ":00");
+            LocalDateTime endTime = LocalDateTime.of(date, time);
+
+            Product newProduct = new Product();
+            newProduct.setName(name);
+            newProduct.setStartPrice(startPrice);
+            newProduct.setStepPrice(stepPrice);
+            newProduct.setSellerId(currentUser.getId());
+            newProduct.setEndTime(endTime);
+            newProduct.setStatus("Đang đấu giá");
+            newProduct.setImagePath(imagePath); // Gán thông tin ảnh vào model
+
+            if (productDAO.addProduct(newProduct)) {
+                SceneManager.getInstance().showPopup("Thành công", "Sản phẩm kèm ảnh đã được đẩy lên hệ thống!");
+                SceneManager.getInstance().switchScene("home.fxml");
+            } else {
+                SceneManager.getInstance().showPopup("Lỗi", "Lỗi đồng bộ dữ liệu với máy chủ.");
+            }
+
         } catch (NumberFormatException e) {
-            showAlert(AlertType.WARNING,
-                    "Dữ liệu không hợp lệ",
-                    "Giá khởi điểm phải là một số!",
-                    "Vui lòng nhập giá hợp lệ (ví dụ: 100000).");
-            return;
+            SceneManager.getInstance().showPopup("Lỗi", "Định dạng giá tiền không hợp lệ!");
         }
-
-        if (startPrice <= 0) {
-            showAlert(AlertType.WARNING,
-                    "Dữ liệu không hợp lệ",
-                    "Giá khởi điểm phải là số dương!",
-                    "Vui lòng nhập giá lớn hơn 0.");
-            return;
-        }
-
-        // --- Bước 3: Tạo đối tượng Product ---
-        int sellerId = SessionManager.getInstance().getCurrentUser().getId();
-        int newId = ProductManager.getInstance().generateNextId();
-
-        // Giá trị mặc định: stepPrice = 10% giá khởi điểm, thời gian = 24 giờ
-        double stepPrice = startPrice * 0.1;
-        LocalDateTime endTime = LocalDateTime.now().plusHours(24);
-
-        Product newProduct = new Product(newId, productName, startPrice, stepPrice, sellerId, endTime);
-        // Sản phẩm mới có status mặc định "Chờ duyệt" (được set trong constructor Product)
-
-        // --- Bước 4: Thêm sản phẩm vào hệ thống ---
-        ProductManager.getInstance().addProduct(newProduct);
-
-        // --- Bước 5: Thông báo thành công và chuyển về Home ---
-        showAlert(AlertType.INFORMATION,
-                "Thành công",
-                "Đăng bán sản phẩm thành công!",
-                "Sản phẩm '" + productName + "' đã được tạo với giá khởi điểm " + startPrice + " VNĐ.\n"
-                + "Sản phẩm đang ở trạng thái \"Chờ duyệt\".");
-
-        SceneManager.getInstance().switchScene("HomeView.fxml");
     }
 
-    // --- Điều hướng ---
-
-    /**
-     * Xử lý khi người dùng nhấn nút "Quay lại" để về trang Home.
-     */
     @FXML
-    private void handleBackToHome() {
-        SceneManager.getInstance().switchScene("HomeView.fxml");
-    }
-
-    // --- Tiện ích ---
-
-    /**
-     * Hiển thị Alert trên giao diện JavaFX.
-     *
-     * @param alertType  Loại Alert (INFORMATION, WARNING, ERROR)
-     * @param title      Tiêu đề cửa sổ Alert
-     * @param header     Dòng tiêu đề chính
-     * @param content    Nội dung chi tiết
-     */
-    private void showAlert(AlertType alertType, String title, String header, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
+    public void handleBackToHome() {
+        SceneManager.getInstance().switchScene("home.fxml");
     }
 }

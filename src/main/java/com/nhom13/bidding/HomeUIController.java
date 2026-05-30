@@ -1,164 +1,172 @@
-package com.nhom13.bidding;
+package com.nhom13.bidding.controller;
+
+import com.nhom13.bidding.core.ProductManager;
+import com.nhom13.bidding.core.SceneManager;
+import com.nhom13.bidding.core.SessionManager;
+import com.nhom13.bidding.model.Product;
+import com.nhom13.bidding.model.User;
+import com.nhom13.bidding.dao.ProductDAO;
+import com.nhom13.bidding.dao.UserDAO;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
-/**
- * HomeUIController - Controller cho Màn hình Chợ (Marketplace).
- *
- * Hiển thị danh sách sản phẩm đang đấu giá dưới dạng lưới Card.
- * Khi click vào sản phẩm, chuyển sang màn hình AuctionView.
- *
- * Nguyên tắc:
- *   - UI không tự xử lý logic: chỉ gọi ProductManager để lấy dữ liệu
- *   - Mọi chuyển cảnh qua SceneManager.getInstance().switchScene()
- *   - Không dùng new Stage().show()
- */
 public class HomeUIController {
 
-    @FXML
-    private GridPane productGrid;
+    @FXML private FlowPane fpProductContainer;
+    @FXML private TextField txtSearch;
 
-    private static final int COLUMNS = 3; // Số cột trong lưới sản phẩm
+    // Khai báo tập trung toàn bộ DAO ở đây
+    private ProductDAO productDAO = new ProductDAO();
+    private UserDAO userDAO = new UserDAO();
 
-    /**
-     * Được JavaFX tự động gọi sau khi FXML được load.
-     * Khởi tạo giao diện bằng cách load danh sách sản phẩm đang đấu giá.
-     */
     @FXML
     public void initialize() {
-        loadActiveProducts();
+        loadProducts();
     }
 
-    // --- Logic Load dữ liệu ---
+    private void loadProducts() {
+        List<Product> products = ProductManager.getInstance().getActiveProducts();
+        displayProducts(products);
+    }
 
-    /**
-     * Lấy danh sách sản phẩm từ ProductManager, lọc những sản phẩm có
-     * status "Đang đấu giá", tạo Card UI cho mỗi sản phẩm và add vào productGrid.
-     */
-    private void loadActiveProducts() {
-        // Xóa nội dung cũ trước khi load lại
-        productGrid.getChildren().clear();
+    private void displayProducts(List<Product> products) {
+        fpProductContainer.getChildren().clear();
 
-        // Lấy danh sách sản phẩm đang đấu giá từ Manager
-        List<Product> activeProducts = ProductManager.getInstance().getActiveProducts();
+        for (Product p : products) {
+            VBox card = new VBox(10);
+            card.setAlignment(Pos.CENTER);
+            card.setStyle("-fx-border-color: #bdc3c7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15; -fx-background-color: white;");
+            card.setPrefWidth(220);
 
-        if (activeProducts.isEmpty()) {
-            // Hiển thị thông báo khi không có sản phẩm
-            Label emptyLabel = new Label("Chưa có sản phẩm nào đang đấu giá.");
-            emptyLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #888888;");
-            productGrid.add(emptyLabel, 0, 0, COLUMNS, 1);
+            ImageView imageView = new ImageView();
+            imageView.setFitWidth(180);
+            imageView.setFitHeight(150);
+            imageView.setPreserveRatio(true);
+
+            String path = p.getImagePath();
+            if (path != null && !path.isEmpty()) {
+                try {
+                    imageView.setImage(new Image(path, true));
+                } catch (Exception e) {
+                    imageView.setImage(new Image("https://via.placeholder.com/150?text=Loi+Load+Anh"));
+                }
+            } else {
+                imageView.setImage(new Image("https://via.placeholder.com/150?text=Chua+Co+Anh"));
+            }
+
+            Label lblName = new Label(p.getName());
+            lblName.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
+            Label lblPrice = new Label(String.format("%,.0f VNĐ", p.getCurrentPrice()));
+            lblPrice.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-font-size: 14px;");
+
+            Button btnBid = new Button("Vào Đấu Giá");
+            btnBid.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+            btnBid.setOnAction(e -> {
+                ProductManager.getInstance().setSelectedProductId(p.getId());
+                SceneManager.getInstance().switchScene("auction.fxml");
+            });
+
+            card.getChildren().addAll(imageView, lblName, lblPrice, btnBid);
+            fpProductContainer.getChildren().add(card);
+        }
+    }
+
+    @FXML
+    public void handleSearch() {
+        String keyword = txtSearch.getText().trim();
+        if (keyword.isEmpty()) {
+            loadProducts();
             return;
         }
+        List<Product> filteredList = productDAO.searchActiveProducts(keyword);
+        displayProducts(filteredList);
+    }
 
-        // Tạo Card UI cho mỗi sản phẩm và add vào grid
-        int col = 0;
-        int row = 0;
-        for (Product product : activeProducts) {
-            VBox card = createProductCard(product);
-            productGrid.add(card, col, row);
+    // TÍNH NĂNG MỚI: Bật Popup thông báo khi nhấn vào chuông
+    @FXML
+    public void handleShowNotifications() {
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+        if (currentUser == null) return;
 
-            col++;
-            if (col >= COLUMNS) {
-                col = 0;
-                row++;
+        List<Product> pendingOrders = productDAO.getPendingDeliveries(currentUser.getId());
+
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Thông báo đơn hàng");
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+
+        VBox layout = new VBox(10);
+        layout.setStyle("-fx-padding: 20; -fx-background-color: white;");
+        layout.setPrefWidth(350);
+
+        if (pendingOrders.isEmpty()) {
+            layout.getChildren().add(new Label("Bạn không có thông báo mới."));
+        } else {
+            for (Product order : pendingOrders) {
+                VBox card = new VBox(5);
+                card.setStyle("-fx-border-color: #f39c12; -fx-padding: 10; -fx-background-color: #fff8e7; -fx-border-radius: 5;");
+
+                Label lblName = new Label("🎁 Sản phẩm: " + order.getName());
+                lblName.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+                Label lblPrice = new Label("Đã thanh toán: " + String.format("%,.0f VNĐ", order.getCurrentPrice()));
+                lblPrice.setStyle("-fx-text-fill: #e74c3c;");
+
+                Button btnReceive = new Button("Đã nhận được hàng");
+                btnReceive.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+
+                btnReceive.setOnAction(e -> {
+                    // Mẹo chống bug click đúp: Khóa nút ngay khi vừa ấn vào
+                    btnReceive.setDisable(true);
+
+                    boolean moneySent = userDAO.addBalance(order.getSellerId(), order.getCurrentPrice());
+                    if (moneySent) {
+                        productDAO.updateProductStatus(order.getId(), "Đã hoàn thành");
+                        SceneManager.getInstance().showPopup("Thành công", "Đã xác nhận nhận hàng!");
+                        popupStage.close();
+                    } else {
+                        // Chuyển tiền lỗi thì nhả nút ra cho ấn lại
+                        btnReceive.setDisable(false);
+                        SceneManager.getInstance().showPopup("Lỗi", "Vui lòng xác nhận lại.");
+                    }
+                });
+
+                card.getChildren().addAll(lblName, lblPrice, btnReceive);
+                layout.getChildren().add(card);
             }
         }
+
+        Scene scene = new Scene(layout);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
     }
 
-    /**
-     * Tạo một Card UI (VBox) hiển thị thông tin sản phẩm.
-     * Card gồm: tên sản phẩm và giá hiện tại, có hiệu ứng hover.
-     *
-     * @param product Sản phẩm cần hiển thị
-     * @return VBox card đại diện cho sản phẩm
-     */
-    private VBox createProductCard(Product product) {
-        // --- Tên sản phẩm ---
-        Label nameLabel = new Label(product.getName());
-        nameLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
-        nameLabel.setStyle("-fx-text-fill: #2c3e50;");
-        nameLabel.setWrapText(true);
-
-        // --- Giá hiện tại (format số tiền) ---
-        NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
-        Label priceLabel = new Label("Giá: " + currencyFormat.format(product.getCurrentPrice()) + " VNĐ");
-        priceLabel.setFont(Font.font("System", FontWeight.NORMAL, 14));
-        priceLabel.setStyle("-fx-text-fill: #e74c3c;");
-
-        // --- Card container ---
-        VBox card = new VBox(8);
-        card.getChildren().addAll(nameLabel, priceLabel);
-        card.setPadding(new Insets(15));
-        card.setAlignment(Pos.CENTER_LEFT);
-        card.setPrefWidth(220);
-        card.setPrefHeight(120);
-        card.setStyle(
-                "-fx-background-color: #ffffff;" +
-                "-fx-border-color: #dcdcdc;" +
-                "-fx-border-radius: 8;" +
-                "-fx-background-radius: 8;" +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 4, 0, 0, 2);"
-        );
-        card.setCursor(Cursor.HAND);
-
-        // --- Hiệu ứng hover ---
-        card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: #f0f7ff;" +
-                "-fx-border-color: #3498db;" +
-                "-fx-border-radius: 8;" +
-                "-fx-background-radius: 8;" +
-                "-fx-effect: dropshadow(three-pass-box, rgba(52,152,219,0.3), 8, 0, 0, 3);"
-        ));
-        card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: #ffffff;" +
-                "-fx-border-color: #dcdcdc;" +
-                "-fx-border-radius: 8;" +
-                "-fx-background-radius: 8;" +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 4, 0, 0, 2);"
-        ));
-
-        // --- Click handler: điều hướng sang AuctionView ---
-        card.setOnMouseClicked(e -> handleItemClick(product.getId()));
-
-        return card;
-    }
-
-    // --- Logic Điều hướng ---
-
-    /**
-     * Xử lý khi người dùng click vào một sản phẩm.
-     * Lưu ID sản phẩm đã chọn vào ProductManager, sau đó chuyển sang AuctionView.
-     *
-     * @param productId ID của sản phẩm được click
-     */
-    private void handleItemClick(int productId) {
-        // Lưu ID sản phẩm đã chọn để AuctionView có thể đọc
-        ProductManager.getInstance().setSelectedProductId(productId);
-
-        // Chuyển sang màn hình Đấu giá
-        SceneManager.getInstance().switchScene("AuctionView.fxml");
-    }
-
-    // --- Điều hướng sang trang Đăng bán ---
-
-    /**
-     * Xử lý khi người dùng nhấn nút "Đăng bán" trên trang Home.
-     * Chuyển sang màn hình SellerView.
-     */
     @FXML
-    private void handleGoToSeller() {
-        SceneManager.getInstance().switchScene("SellerView.fxml");
+    public void handleGoToSeller() {
+        SceneManager.getInstance().switchScene("seller.fxml");
+    }
+
+    @FXML
+    public void handleLogout() {
+        SessionManager.getInstance().logout();
+        SceneManager.getInstance().switchScene("login.fxml");
+    }
+
+    @FXML
+    public void handleGoToProfile() {
+        SceneManager.getInstance().switchScene("profile.fxml");
     }
 }
