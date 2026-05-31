@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nhom13.bidding.controller.HomeUIController">
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #2c3e50;">
+            <Label text="ĐẤU GIÁ.VN" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <TextField fx:id="txtSearch" promptText="Tìm kiếm..." prefWidth="250"/>
+            <Button text="🔍" onAction="#handleSearch" style="-fx-cursor: hand;" />
+            <Button text="🔔" onAction="#handleShowNotifications" style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-cursor: hand;" />
+            <Button text="➕" onAction="#handleGoToSeller" style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-cursor: hand;" />
+            <Button text="👤" onAction="#handleGoToProfile" style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-cursor: hand;" />
+            <Button text="🚪" onAction="#handleLogout" style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-cursor: hand;" />
+        </HBox> </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <FlowPane fx:id="fpProductContainer" hgap="20" vgap="20" style="-fx-padding: 20;"/>
+        </ScrollPane>
+    </center>
+</BorderPane>
