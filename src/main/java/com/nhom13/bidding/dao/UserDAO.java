@@ -72,23 +72,17 @@ public class UserDAO {
 
 
     public boolean updateBalance(int userId, double amount) {
-        // Thêm chốt chặn: Chỉ trừ khi balance hiện tại >= số tiền cần trừ
-        String sql = "UPDATE user SET balance = balance - ? WHERE id = ? AND balance >= ?";
-        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, amount);
             pstmt.setInt(2, userId);
-            pstmt.setDouble(3, amount); // Tham số thứ 3 cho điều kiện kiểm tra
 
-            // Nếu không đủ tiền, executeUpdate() sẽ trả về 0 -> return false
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-
     // Hàm cộng tiền cho người bán khi giao dịch hoàn tất
     public boolean addBalance(int userId, double amount) {
         String sql = "UPDATE user SET balance = balance + ? WHERE id = ?";
