@@ -42,8 +42,6 @@ public class LiveAuctionController {
             return;
         }
 
-        // Kiểm tra ví tiền của Hoàng
-        if (!currentUser.canAfford(amount)) {
             SceneManager.getInstance().showPopup("Số Dư Không Đủ", "Ví tài khoản không đủ tiền để thực hiện mức Bid này.");
             return;
         }
@@ -52,8 +50,6 @@ public class LiveAuctionController {
             // Gọi Product thực hiện kiểm tra bước giá (placeBid có thể ném ra Exception)
             product.placeBid(amount, currentUser.getId());
 
-            // Nếu không dính lỗi giá thấp, tiến hành trừ tiền User
-            currentUser.deductMoney(amount);
 
             SceneManager.getInstance().showPopup("Đặt Giá Thành Công",
                     "Hệ thống ghi nhận mức giá mới: " + String.format("%,.0f VNĐ", amount));

@@ -72,9 +72,6 @@ public class UserDAO {
 
 
     public boolean updateBalance(int userId, double amount) {
-        // Trừ trực tiếp số tiền vào cột balance dưới MySQL
-        String sql = "UPDATE user SET balance = balance - ? WHERE id = ?";
-        try (Connection conn = com.nhom13.bidding.core.DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, amount);
