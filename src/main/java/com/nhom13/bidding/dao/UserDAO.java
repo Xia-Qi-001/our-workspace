@@ -75,7 +75,7 @@ public class UserDAO {
         // Thêm chốt chặn: Chỉ trừ khi balance hiện tại >= số tiền cần trừ
         String sql = "UPDATE user SET balance = balance - ? WHERE id = ? AND balance >= ?";
         try (Connection conn = DatabaseConnection.getConnection();
-        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, amount);
             pstmt.setInt(2, userId);

@@ -28,7 +28,6 @@ public class LiveAuctionController {
     }
 
     // Đồng bộ hóa luồng giao dịch tiền và giá
-    // Đồng bộ hóa luồng giao dịch tiền và giá
     public synchronized void processBid(double amount) {
         User currentUser = SessionManager.getInstance().getCurrentUser();
 
@@ -43,16 +42,6 @@ public class LiveAuctionController {
             return;
         }
 
-        // VÁ LỖI LOGIC TRỪ TIỀN (Tính Delta)
-        double deltaAmount = amount;
-
-        // Nếu chính user này đang giữ top 1 mà muốn tự nâng giá để đè người khác
-        if (product.getCurrentWinnerId() == currentUser.getId()) {
-            deltaAmount = amount - product.getCurrentPrice();
-        }
-
-        // Kiểm tra ví tiền với số tiền chênh lệch (delta), không phải toàn bộ amount
-        if (!currentUser.canAfford(deltaAmount)) {
             SceneManager.getInstance().showPopup("Số Dư Không Đủ", "Ví tài khoản không đủ tiền để thực hiện mức Bid này.");
             return;
         }
@@ -61,8 +50,6 @@ public class LiveAuctionController {
             // Gọi Product thực hiện kiểm tra bước giá (placeBid có thể ném ra Exception)
             product.placeBid(amount, currentUser.getId());
 
-            // Chỉ trừ số tiền chênh lệch
-            currentUser.deductMoney(deltaAmount);
 
             SceneManager.getInstance().showPopup("Đặt Giá Thành Công",
                     "Hệ thống ghi nhận mức giá mới: " + String.format("%,.0f VNĐ", amount));
