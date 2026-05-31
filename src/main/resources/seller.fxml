@@ -1,62 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ComboBox?>
 
-<VBox alignment="TOP_CENTER" prefHeight="550.0" prefWidth="500.0" spacing="15.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nhom13.bidding.controller.SellerUIController">
-    <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-    </padding>
-    <children>
-        <Label text="ĐĂNG BÁN VẬT PHẨM MỚI" textFill="#002d62">
-            <font> <Font name="System Bold" size="22.0" /> </font>
-        </Label>
-        <GridPane hgap="10.0" vgap="12.0">
-            <columnConstraints>
-                <ColumnConstraints prefWidth="120.0" />
-                <ColumnConstraints prefWidth="280.0" />
-            </columnConstraints>
-            <children>
-                <Label text="Tên vật phẩm:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField fx:id="txtName" promptText="VD: Laptop Dell XPS 15" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+<VBox alignment="CENTER" spacing="15.0" prefHeight="450.0" prefWidth="600.0" style="-fx-padding: 20;"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.nhom13.bidding.controller.SellerUIController">
 
-                <Label text="Giá khởi điểm:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <TextField fx:id="txtStartPrice" promptText="Nhập số tiền (VNĐ)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Label text="ĐĂNG BÁN SẢN PHẨM" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-                <Label text="Bước giá tối thiểu:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <TextField fx:id="txtStepPrice" promptText="VNĐ" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    <VBox maxWidth="350.0" spacing="5.0">
+        <Label text="Tên sản phẩm:"/>
+        <TextField fx:id="txtProductName" promptText="Nhập tên món đồ..."/>
+    </VBox>
 
-                <Label text="Thời gian kết thúc:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                    <children>
-                        <DatePicker fx:id="dpEndDate" prefWidth="150.0" />
-                        <TextField fx:id="txtEndTime" promptText="HH:mm" prefWidth="120.0" />
-                    </children>
-                </HBox>
+    <VBox maxWidth="350.0" spacing="5.0">
+        <Label text="Giá khởi điểm (VNĐ):"/>
+        <TextField fx:id="txtStartPrice" promptText="Ví dụ: 100000"/>
+    </VBox>
 
-                <Label text="Đường dẫn ảnh:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                <TextField fx:id="txtImagePath" promptText="/images/default.png" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+    <VBox maxWidth="350.0" spacing="5.0">
+        <Label text="Bước giá tối thiểu (VNĐ):"/>
+        <TextField fx:id="txtStepPrice" promptText="Ví dụ: 10000"/>
+    </VBox>
 
-                <Label text="Mô tả chi tiết:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                <TextArea fx:id="txtDescription" prefHeight="80.0" promptText="Tình trạng, cấu hình..." GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            </children>
-        </GridPane>
-        <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 20 0 0 0;">
-            <children>
-                <Button mnemonicParsing="false" onAction="#handleCancelClick" text="Hủy bỏ" style="-fx-background-color: #64748b; -fx-text-fill: white;" prefWidth="100.0" />
-                <Button mnemonicParsing="false" onAction="#handlePostProductClick" text="Đăng Bán Ngay" style="-fx-background-color: #C5B358; -fx-text-fill: #002d62;" prefWidth="150.0">
-                    <font> <Font name="System Bold" size="14.0" /> </font>
-                </Button>
-            </children>
+    <VBox maxWidth="350.0" spacing="5.0">
+        <Label text="Thời gian kết thúc (Ngày - Giờ - Phút):"/>
+        <HBox spacing="10.0">
+            <DatePicker fx:id="dpEndDate" promptText="Chọn ngày"/>
+            <ComboBox fx:id="cbHour" prefWidth="80.0"/>
+            <ComboBox fx:id="cbMinute" prefWidth="80.0"/>
         </HBox>
-    </children>
+    </VBox>
+
+    <VBox maxWidth="350.0" spacing="5.0">
+        <Label text="Ảnh sản phẩm (Link mạng hoặc File máy tính):"/>
+        <HBox spacing="10.0">
+            <TextField fx:id="txtImagePath" promptText="Dán link hoặc bấm nút chọn ảnh..." prefWidth="250.0"/>
+            <Button onAction="#handleChooseImage" text="Chọn ảnh..." style="-fx-background-color: #e0e0e0;"/>
+        </HBox>
+    </VBox>
+
+    <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 10 0 0 0;">
+        <Button onAction="#handlePostProduct" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Đăng Bán" />
+        <Button onAction="#handleBackToHome" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;" text="Quay Lại" />
+    </HBox>
 </VBox>

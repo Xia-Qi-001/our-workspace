@@ -1,29 +1,19 @@
-package com.nhom13.bidding.core; // Đã sửa đúng "hộ khẩu"
+package com.nhom13.bidding.core;
 
+import com.nhom13.bidding.dao.ProductDAO;
 import com.nhom13.bidding.model.Product;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ProductManager {
-
     private static ProductManager instance;
-    private HashMap<Integer, Product> productList = new HashMap<>();
+
+    // Nối với cầu nối DB
+    private ProductDAO productDAO = new ProductDAO();
+
+    // Biến lưu vết món đồ đang được click chọn để xem chi tiết
     private int selectedProductId = -1;
-    private int nextId = 3; // Vì đã mồi sẵn 2 món đồ nên ID tiếp theo là 3
 
-    private ProductManager() {
-        // BƠM DỮ LIỆU MỒI VÀO ĐÂY ĐỂ TEST UI
-        Product p1 = new Product(1, "Laptop ThinkPad T14", 15000000, 500000, 2, LocalDateTime.now().plusHours(24));
-        p1.setStatus("Đang đấu giá"); // Ép trạng thái chuẩn để HomeUI lọc được
-
-        Product p2 = new Product(2, "Mô hình Gundam", 2000000, 100000, 2, LocalDateTime.now().plusHours(12));
-        p2.setStatus("Đang đấu giá");
-
-        productList.put(1, p1);
-        productList.put(2, p2);
-    }
+    private ProductManager() {}
 
     public static ProductManager getInstance() {
         if (instance == null) {
@@ -32,36 +22,21 @@ public class ProductManager {
         return instance;
     }
 
-    public void addProduct(Product product) {
-        // Ép tự động duyệt để test cho lẹ (nếu cậu muốn test thực tế luôn)
-        product.setStatus("Đang đấu giá");
-        productList.put(product.getId(), product);
-        System.out.println("Thêm sản phẩm thành công: " + product.getName());
-    }
-
-    public Product getProductById(int id) {
-        return productList.get(id);
-    }
-
+    // GỌI THẲNG XUỐNG DB THAY VÌ LẤY TỪ LIST ẢO
     public List<Product> getActiveProducts() {
-        List<Product> activeProducts = new ArrayList<>();
-        for (Product product : productList.values()) {
-            if ("Đang đấu giá".equals(product.getStatus())) {
-                activeProducts.add(product);
-            }
-        }
-        return activeProducts;
+        return productDAO.getAllActiveProducts();
     }
 
-    public int generateNextId() {
-        return nextId++;
+    // Trạm trung chuyển: Gọi xuống DAO để lấy đồ theo ID
+    public Product getProductById(int id) {
+        return productDAO.getProductById(id);
     }
 
-    public void setSelectedProductId(int productId) {
-        this.selectedProductId = productId;
+    public void setSelectedProductId(int id) {
+        this.selectedProductId = id;
     }
 
     public int getSelectedProductId() {
-        return selectedProductId;
+        return this.selectedProductId;
     }
 }

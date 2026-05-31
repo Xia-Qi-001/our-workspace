@@ -1,75 +1,54 @@
 package com.nhom13.bidding.controller;
 
-import com.nhom13.bidding.core.SessionManager;
 import com.nhom13.bidding.core.SceneManager;
+import com.nhom13.bidding.dao.UserDAO;
+import com.nhom13.bidding.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
 
 public class RegisterUIController {
 
-    @FXML
-    private TextField txtUsername;
+    @FXML private TextField txtUsername;
+    @FXML private PasswordField txtPassword;
+    @FXML private TextField txtEmail;
 
-    @FXML
-    private TextField txtEmail;
-
-    @FXML
-    private PasswordField txtPassword;
-
-    @FXML
-    private PasswordField txtConfirmPassword;
+    // Khởi tạo đối tượng DAO để giao tiếp với MySQL
+    private UserDAO userDAO = new UserDAO();
 
     @FXML
     public void handleRegisterClick() {
-        String username = txtUsername.getText();
-        String email = txtEmail.getText();
-        String password = txtPassword.getText();
-        String confirm = txtConfirmPassword.getText();
+        String username = txtUsername.getText().trim();
+        String password = txtPassword.getText().trim();
+        String email = txtEmail.getText().trim();
 
-        // 1. Kiểm tra bỏ trống
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            showAlert("Lỗi", "Vui lòng điền đầy đủ thông tin bắt buộc!");
+        // 1. Kiểm tra dữ liệu đầu vào (Validation)
+        if (username.isEmpty() || password.isEmpty()) {
+            SceneManager.getInstance().showPopup("Lỗi", "Không được để trống tài khoản và mật khẩu!");
             return;
         }
 
-        // 2. Kiểm tra khớp mật khẩu
-        if (!password.equals(confirm)) {
-            showAlert("Lỗi", "Mật khẩu nhập lại không khớp!");
-            return;
-        }
+        // 2. Đóng gói dữ liệu vào Model
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(password); // Lưu ý: Tạm thời lưu text thô, thực tế sẽ phải băm (hash) mật khẩu
+        newUser.setEmail(email);
+        newUser.setBalance(100000.0); // Tặng 1 trăm nghìn VNĐ làm phúc lợi lúc tạo nick
 
-        // 3. Gọi logic đăng ký (Giả định SessionManager có hàm register)
-        // Lưu ý: Cậu có thể điều chỉnh hàm này tùy theo cách Hoàng viết Service
-        boolean isSuccess = SessionManager.getInstance().register(username, password, email);
+        // 3. Đẩy xuống MySQL thông qua DAO
+        boolean isSuccess = userDAO.registerUser(newUser);
 
+        // 4. Xử lý kết quả trả về
         if (isSuccess) {
-            showInfo("Thành công", "Đăng ký tài khoản thành công! Quay lại đăng nhập.");
-            // SceneManager.getInstance().switchScene("login.fxml");
+            SceneManager.getInstance().showPopup("Thành công", "Đăng ký tài khoản thành công!");
+            SceneManager.getInstance().switchScene("login.fxml");
         } else {
-            showAlert("Thất bại", "Tên đăng nhập hoặc Email đã tồn tại trên hệ thống!");
+            SceneManager.getInstance().showPopup("Lỗi", "Tài khoản đã tồn tại hoặc lỗi mạng!");
         }
     }
 
     @FXML
     public void handleBackToLogin() {
         SceneManager.getInstance().switchScene("login.fxml");
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showInfo(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

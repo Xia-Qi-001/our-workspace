@@ -14,7 +14,7 @@
         <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
     </padding>
     <children>
-        <Label text="SÀN ĐẤU GIÁ" textFill="#002d62">
+        <Label text="Đấu Giá.VN" textFill="#002d62">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>

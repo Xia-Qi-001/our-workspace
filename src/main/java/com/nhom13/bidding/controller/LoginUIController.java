@@ -2,51 +2,45 @@ package com.nhom13.bidding.controller;
 
 import com.nhom13.bidding.core.SceneManager;
 import com.nhom13.bidding.core.SessionManager;
+import com.nhom13.bidding.dao.UserDAO;
+import com.nhom13.bidding.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
 
 public class LoginUIController {
 
-    @FXML
-    private TextField txtUsername;
+    @FXML private TextField txtUsername;
+    @FXML private PasswordField txtPassword;
 
-    @FXML
-    private PasswordField txtPassword;
+    // Khởi tạo DAO để giao tiếp với MySQL
+    private UserDAO userDAO = new UserDAO();
 
     @FXML
     public void handleLoginClick() {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
+        String username = txtUsername.getText().trim();
+        String password = txtPassword.getText().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-            showAlert("Lỗi", "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!");
+            SceneManager.getInstance().showPopup("Lỗi", "Không được để trống tài khoản và mật khẩu!");
             return;
         }
 
-        boolean isSuccess = SessionManager.getInstance().login(username, password);
+        // Gọi truy vấn thật xuống Aiven thông qua DAO
+        User loggedInUser = userDAO.loginUser(username, password);
 
-        if (isSuccess) {
-            System.out.println("Đăng nhập thành công! Chuyển hướng sang màn hình Home...");
-            // Lệnh gọi SceneManager từ thư mục core để chuyển trang
+        if (loggedInUser != null) {
+            // Đăng nhập thành công -> Lưu dữ liệu thật vào phiên làm việc (Session)
+            SessionManager.getInstance().setCurrentUser(loggedInUser);
             SceneManager.getInstance().switchScene("home.fxml");
         } else {
-            showAlert("Thất bại", "Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại!");
+            // Trả về null nghĩa là không tìm thấy trong DB
+            SceneManager.getInstance().showPopup("Lỗi", "Sai tài khoản hoặc mật khẩu!");
         }
     }
 
-    // Gắn hàm chuyển sang trang Đăng Ký ở đây
     @FXML
     public void handleGoToRegister() {
         SceneManager.getInstance().switchScene("register.fxml");
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

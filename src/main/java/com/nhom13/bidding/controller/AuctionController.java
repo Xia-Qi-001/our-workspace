@@ -1,57 +1,128 @@
 package com.nhom13.bidding.controller;
 
-import com.nhom13.bidding.core.LiveAuctionController;
-import com.nhom13.bidding.core.ProductManager;
-import com.nhom13.bidding.core.SceneManager;
 import com.nhom13.bidding.model.Product;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import com.nhom13.bidding.model.User;
+import com.nhom13.bidding.dao.ProductDAO;
+import com.nhom13.bidding.dao.UserDAO;
+import com.nhom13.bidding.core.SessionManager;
+import java.time.LocalDateTime;
+import java.time.Duration;
 
 public class AuctionController {
+    private int remainingTime;
+    private Product product;
+    private User currentUser;
 
-    @FXML private Label lblProductName;
-    @FXML private Label lblCurrentPrice;
-    private Product currentProduct;
-    private LiveAuctionController auctionCore;
+    private ProductDAO productDAO = new ProductDAO();
+    private UserDAO userDAO = new UserDAO();
 
-    @FXML
-    private TextField txtBidAmount;
+    public AuctionController(Product product, User currentUser) {
+        this.product = product;
+        this.currentUser = currentUser;
 
-    @FXML
-    public void initialize() {
-        // 1. Đọc ID trung chuyển từ kho của Huy
-        int selectedId = ProductManager.getInstance().getSelectedProductId();
-        currentProduct = ProductManager.getInstance().getProductById(selectedId);
+        if (product.getEndTime() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            Duration duration = Duration.between(now, product.getEndTime());
 
-        if (currentProduct != null) {
-            // 2. Đổ dữ liệu lên giao diện phòng đấu giá
-            lblProductName.setText(currentProduct.getName());
-            lblCurrentPrice.setText(String.format("%,.0f VNĐ", currentProduct.getCurrentPrice()));
+            this.remainingTime = (int) duration.getSeconds();
 
-            // 3. Khởi chạy bộ đếm ngược đa luồng của Tech Lead cho riêng món đồ này
-            auctionCore = new LiveAuctionController(currentProduct);
-            auctionCore.startAuctionTimer();
+            if (this.remainingTime < 0) {
+                this.remainingTime = 0;
+            }
+        } else {
+            this.remainingTime = 0;
         }
     }
 
-    @FXML
-    public void handlePlaceBid() {
+    public boolean isTimeValid() {
+        return remainingTime > 0;
+    }
+
+    public String processBid(User user, double amount) {
+        if (user == null) return "Vui lòng đăng nhập!";
+
+        // ==========================================================
+        // 🚨 HỆ THỐNG IN LOG BẮT HUNG THỦ (XEM DƯỚI CONSOLE INTELLIJ)
+        // ==========================================================
+        System.out.println("\n========== [DEBUG ĐẤU GIÁ ĐẬP CHẾT BUG] ==========");
+        System.out.println("-> ID Người đang bấm nút đặt giá (RAM): " + user.getId());
+        System.out.println("-> ID Chủ hàng thực sự của món đồ (RAM): " + product.getSellerId());
+        System.out.println("-> Trạng thái hiện tại của sản phẩm: " + product.getStatus());
+        System.out.println("===================================================\n");
+
+        // CHỐT CHẶN 1: Khóa primitive cứng bằng cơm ngay tại cửa Controller
+        if (user.getId() == product.getSellerId()) {
+            return "Cậu không thể tự đặt giá cho sản phẩm của chính mình!";
+        }
+
+        if (!isTimeValid()) return "Phiên đấu giá đã kết thúc!";
+        if (user.getBalance() < amount) return "Số dư không đủ!";
+
+        // Cập nhật giá mới nhất từ DB để chống đặt đè giá cũ
+        double latestPrice = productDAO.getLatestPrice(product.getId());
+        if (latestPrice != -1) {
+            product.setCurrentPrice(latestPrice);
+        }
+
+        if (amount < product.getCurrentPrice() + product.getStepPrice()) {
+            return "Giá đặt chưa đủ bước giá tối thiểu!";
+        }
+
+        // CHỐT CHẶN 2: Ép chạy qua bộ logic ném Exception của Model Phase 2 cho chắc cú
         try {
-            double amount = Double.parseDouble(txtBidAmount.getText().trim());
-            // Gọi tầng lõi xử lý tiền tệ và đồng bộ luồng
-            auctionCore.processBid(amount);
+            product.placeBid(amount, user.getId());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
 
-            // Cập nhật lại giá mới lên màn hình sau khi Bid thành công
-            lblCurrentPrice.setText(String.format("%,.0f VNĐ", currentProduct.getCurrentPrice()));
-            txtBidAmount.clear();
-        } catch (NumberFormatException e) {
-            SceneManager.getInstance().showPopup("Lỗi", "Số tiền không hợp lệ!");
+        // VƯỢT QUA ĐƯỢC 2 LỚP KHIÊN TRÊN THÌ MỚI XUỐNG DB
+        boolean isSuccess = productDAO.updateBidPrice(product.getId(), amount, user.getId());
+
+        if (isSuccess) {
+            int oldWinnerId = product.getCurrentWinnerId();
+            if (oldWinnerId > 0 && oldWinnerId != user.getId()) {
+                System.out.println("Đang hoàn tiền cho user: " + oldWinnerId);
+            }
+
+            product.setCurrentPrice(amount);
+            product.setCurrentWinnerId(user.getId());
+            return "SUCCESS";
+        } else {
+            return "Lỗi đường truyền, không thể đặt giá lúc này!";
         }
     }
 
-    @FXML
-    public void handleBackToHome() {
-        SceneManager.getInstance().switchScene("home.fxml");
+    public void endAuction() {
+        this.remainingTime = 0;
+
+        int winnerId = product.getCurrentWinnerId();
+        double finalPrice = product.getCurrentPrice();
+
+        if (winnerId > 0) {
+            productDAO.updateProductStatus(product.getId(), "Chờ giao hàng");
+
+            boolean isDeducted = userDAO.updateBalance(winnerId, finalPrice);
+            if (isDeducted) {
+                System.out.println("Đã trừ tiền dưới DB cho User ID: " + winnerId);
+
+                User loginUser = SessionManager.getInstance().getCurrentUser();
+                if (loginUser != null && loginUser.getId() == winnerId) {
+                    loginUser.setBalance(loginUser.getBalance() - finalPrice);
+                    System.out.println("Đã đồng bộ trừ tiền trên RAM cho Session!");
+                }
+            }
+        } else {
+            productDAO.updateProductStatus(product.getId(), "Đã kết thúc");
+        }
+    }
+
+    public int getRemainingTime() {
+        return this.remainingTime;
+    }
+
+    public void tickDown() {
+        if (remainingTime > 0) {
+            remainingTime--;
+        }
     }
 }

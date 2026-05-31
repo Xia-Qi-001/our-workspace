@@ -13,7 +13,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         // 1. Thiết lập tiêu đề cho cửa sổ chính
-        primaryStage.setTitle("Sàn Đấu Giá Nhóm 13 - V2");
+        primaryStage.setTitle("Sàn Đấu Giá Nhóm 13 - v3");
 
         // 2. Bàn giao cửa sổ gốc Stage cho SceneManager độc quyền kiểm soát
         SceneManager.getInstance().setMainStage(primaryStage);
