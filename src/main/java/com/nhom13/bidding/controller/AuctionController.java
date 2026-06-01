@@ -44,13 +44,13 @@ public class AuctionController {
         // ==========================================================
         // 🚨 HỆ THỐNG IN LOG BẮT HUNG THỦ (XEM DƯỚI CONSOLE INTELLIJ)
         // ==========================================================
-        System.out.println("\n========== [DEBUG ĐẤU GIÁ ĐẬP CHẾT BUG] ==========");
-        System.out.println("-> ID Người đang bấm nút đặt giá (RAM): " + user.getId());
-        System.out.println("-> ID Chủ hàng thực sự của món đồ (RAM): " + product.getSellerId());
-        System.out.println("-> Trạng thái hiện tại của sản phẩm: " + product.getStatus());
-        System.out.println("===================================================\n");
+        // System.out.println("\n========== [DEBUG ĐẤU GIÁ ĐẬP CHẾT BUG] ==========");
+        // System.out.println("-> ID Người đang bấm nút đặt giá (RAM): " + user.getId());
+        // System.out.println("-> ID Chủ hàng thực sự của món đồ (RAM): " + product.getSellerId());
+        // System.out.println("-> Trạng thái hiện tại của sản phẩm: " + product.getStatus());
+        // System.out.println("===================================================\n");
 
-        // CHỐT CHẶN 1: Khóa primitive cứng bằng cơm ngay tại cửa Controller
+        // // CHỐT CHẶN 1: Khóa primitive cứng bằng cơm ngay tại cửa Controller
         if (user.getId() == product.getSellerId()) {
             return "Cậu không thể tự đặt giá cho sản phẩm của chính mình!";
         }
