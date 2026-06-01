@@ -41,18 +41,18 @@ public class AuctionController {
     public String processBid(User user, double amount) {
         if (user == null) return "Vui lòng đăng nhập!";
 
-        // ==========================================================
-        // 🚨 HỆ THỐNG IN LOG BẮT HUNG THỦ (XEM DƯỚI CONSOLE INTELLIJ)
-        // ==========================================================
-        System.out.println("\n========== [DEBUG ĐẤU GIÁ ĐẬP CHẾT BUG] ==========");
-        System.out.println("-> ID Người đang bấm nút đặt giá (RAM): " + user.getId());
-        System.out.println("-> ID Chủ hàng thực sự của món đồ (RAM): " + product.getSellerId());
-        System.out.println("-> Trạng thái hiện tại của sản phẩm: " + product.getStatus());
-        System.out.println("===================================================\n");
+        // // ==========================================================
+        // // 🚨 HỆ THỐNG IN LOG BẮT HUNG THỦ (XEM DƯỚI CONSOLE INTELLIJ)
+        // // ==========================================================
+        // System.out.println("\n========== [DEBUG ĐẤU GIÁ ĐẬP CHẾT BUG] ==========");
+        // System.out.println("-> ID Người đang bấm nút đặt giá (RAM): " + user.getId());
+        // System.out.println("-> ID Chủ hàng thực sự của món đồ (RAM): " + product.getSellerId());
+        // System.out.println("-> Trạng thái hiện tại của sản phẩm: " + product.getStatus());
+        // System.out.println("===================================================\n");
 
-        // CHỐT CHẶN 1: Khóa primitive cứng bằng cơm ngay tại cửa Controller
+        // // CHỐT CHẶN 1: Khóa primitive cứng bằng cơm ngay tại cửa Controller
         if (user.getId() == product.getSellerId()) {
-            return "Cậu không thể tự đặt giá cho sản phẩm của chính mình!";
+            return "Bạn không thể tự đặt giá cho sản phẩm của chính mình!";
         }
 
         if (!isTimeValid()) return "Phiên đấu giá đã kết thúc!";
